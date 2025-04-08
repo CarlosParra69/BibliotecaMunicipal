@@ -55,6 +55,7 @@ public abstract class Libro {
     public void setFechaPublicacion(int fechaPublicacion) {
         this.fechaPublicacion = fechaPublicacion;
     }
+    public abstract String getDescripcion();
 
     @Override
     public String toString() {
