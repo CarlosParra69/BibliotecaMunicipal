@@ -28,13 +28,13 @@
                 <div class="dashboard-item">
                     <h3>Gestión de Libros</h3>
                     <p>Administre el inventario de libros de la biblioteca.</p>
-                    <a href="books/list.jsp" class="btn">Ver Libros</a>
+                    <a href="books/list.jsp" class="btn btn-info">Ver Libros</a>
                 </div>
                 
                 <div class="dashboard-item">
                     <h3>Gestión de Préstamos</h3>
                     <p>Administre los préstamos de libros a los usuarios.</p>
-                    <a href="loans/list.jsp" class="btn">Ver Préstamos</a>
+                    <a href="loans/list.jsp" class="btn btn-info">Ver Préstamos</a>
                 </div>
             </div>
             

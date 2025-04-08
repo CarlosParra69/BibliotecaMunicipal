@@ -60,7 +60,7 @@
                 <label for="returnDate">Fecha de Devolución:</label>
                 <input type="date" id="returnDate" name="returnDate" required>
             </div>
-            <input type="submit" value="Guardar" class="btn">
+            <input type="submit" value="Guardar" class="btn btn-success">
         </form>
 
         <h2>Lista de Préstamos</h2>
@@ -84,7 +84,7 @@
                     <td>2025-01-01</td>
                     <td>2025-01-15</td>
                     <td>
-                        <a href="edit.jsp?id=1" class="btn" onclick="showAlert('edit'); return false;">Editar</a>
+                        <a href="edit.jsp?id=1" class="btn btn-success" onclick="showAlert('edit'); return false;">Editar</a>
                         <a href="delete.jsp?id=1" class="btn btn-danger" onclick="showAlert('delete'); return false;">Eliminar</a>
                     </td>
                 </tr>

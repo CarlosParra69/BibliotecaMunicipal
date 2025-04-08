@@ -56,7 +56,7 @@
                 <label for="isbn">ISBN:</label>
                 <input type="text" id="isbn" name="isbn" required>
             </div>
-            <input type="submit" value="Guardar" class="btn">
+            <input type="submit" value="Guardar" class="btn btn-success">
         </form>
 
         <h2>Lista de Libros</h2>
@@ -78,7 +78,7 @@
                     <td>Autor Ejemplo</td>
                     <td>123456789</td>
                     <td>
-                        <a href="edit.jsp?id=1" class="btn" onclick="showAlert('edit'); return false;">Editar</a>
+                        <a href="edit.jsp?id=1" class="btn btn-success" onclick="showAlert('edit'); return false;">Editar</a>
                         <a href="delete.jsp?id=1" class="btn btn-danger" onclick="showAlert('delete'); return false;">Eliminar</a>
                     </td>
                 </tr>
