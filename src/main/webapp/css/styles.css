@@ -1,13 +1,13 @@
 /* Estilos generales */
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #f0f4f8; /* Color de fondo más suave */
+    background-color: #f0f4f8; /* Color de fondo suave y neutro */
     margin: 0;
     padding: 20px;
 }
 
 header {
-    background: #0056b3; /* Color azul más oscuro */
+    background: #3a7dff; /* Azul brillante */
     color: white;
     padding: 20px 0;
     text-align: center;
@@ -31,26 +31,26 @@ nav ul li {
 
 nav ul li a {
     text-decoration: none;
-    color: #0056b3; /* Color azul */
+    color: #3a7dff; /* Azul brillante */
     font-weight: bold;
     transition: color 0.3s;
 }
 
 nav ul li a:hover {
-    color: #003d80; /* Color azul más oscuro al pasar el mouse */
+    color: #2a5bbf; /* Azul más oscuro al pasar el mouse */
 }
 
 .container {
     max-width: 900px;
     margin: auto;
-    background: linear-gradient(135deg, #66ff99fff, #66ff99ecef); /* Degradado suave de blanco a gris claro */
+    background: #ffffff; /* Fondo blanco para el contenedor */
     padding: 30px;
     border-radius: 8px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
 }
 
 h1, h2, h3 {
-    color: #333;
+    color: #333; /* Color de texto oscuro */
 }
 
 .dashboard {
@@ -60,7 +60,7 @@ h1, h2, h3 {
 }
 
 .dashboard-item {
-    background: #e9ecef;
+    background: #f1f1f1; /* Color gris claro */
     padding: 20px;
     border-radius: 8px;
     flex: 1;
@@ -74,7 +74,7 @@ h1, h2, h3 {
 }
 
 .dashboard-item:hover {
-    background: #d3d3d3;
+    background: #e0e0e0; /* Gris más oscuro al pasar el mouse */
     transform: translateY(-2px); /* Efecto de elevación al pasar el mouse */
 }
 
@@ -90,7 +90,7 @@ h1, h2, h3 {
 }
 
 .btn:hover {
-    background-color: #777; /* Verde más oscuro */
+    background-color: #218838; /* Verde más oscuro */
     transform: translateY(-2px); /* Efecto de elevación al pasar el mouse */
 }
 
@@ -115,12 +115,12 @@ table th, table td {
 }
 
 table th {
-    background-color: #0056b3; /* Azul oscuro */
+    background-color: #3a7dff; /* Azul brillante */
     color: white;
 }
 
 table tr:nth-child(even) {
-    background-color: #cc0033; /* Color de fondo alternativo */
+    background-color: #f9f9f9; /* Color de fondo alternativo */
 }
 
 table tr:hover {
