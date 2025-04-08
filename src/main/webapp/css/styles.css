@@ -1,0 +1,135 @@
+/* Estilos generales */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f4f8; /* Color de fondo más suave */
+    margin: 0;
+    padding: 20px;
+}
+
+header {
+    background: #0056b3; /* Color azul más oscuro */
+    color: white;
+    padding: 20px 0;
+    text-align: center;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+nav {
+    margin: 20px 0;
+}
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+    margin-right: 20px;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #0056b3; /* Color azul */
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+nav ul li a:hover {
+    color: #003d80; /* Color azul más oscuro al pasar el mouse */
+}
+
+.container {
+    max-width: 900px;
+    margin: auto;
+    background: linear-gradient(135deg, #66ff99fff, #66ff99ecef); /* Degradado suave de blanco a gris claro */
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+h1, h2, h3 {
+    color: #333;
+}
+
+.dashboard {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0;
+}
+
+.dashboard-item {
+    background: #e9ecef;
+    padding: 20px;
+    border-radius: 8px;
+    flex: 1;
+    margin-right: 15px;
+    transition: background 0.3s, transform 0.3s;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-item:last-child {
+    margin-right: 0;
+}
+
+.dashboard-item:hover {
+    background: #d3d3d3;
+    transform: translateY(-2px); /* Efecto de elevación al pasar el mouse */
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #28a745; /* Verde */
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-top: 10px;
+    transition: background 0.3s, transform 0.3s;
+}
+
+.btn:hover {
+    background-color: #777; /* Verde más oscuro */
+    transform: translateY(-2px); /* Efecto de elevación al pasar el mouse */
+}
+
+.btn-danger {
+    background-color: #dc3545; /* Rojo */
+}
+
+.btn-danger:hover {
+    background-color: #c82333; /* Rojo más oscuro */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table th, table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+}
+
+table th {
+    background-color: #0056b3; /* Azul oscuro */
+    color: white;
+}
+
+table tr:nth-child(even) {
+    background-color: #cc0033; /* Color de fondo alternativo */
+}
+
+table tr:hover {
+    background-color: #f1f1f1; /* Color de fondo al pasar el mouse */
+}
+
+footer {
+    text-align: center;
+    margin-top: 20px;
+    color: #777;
+    font-size: 0.9em;
+}
