@@ -42,37 +42,63 @@
         <div class="container">
             <h2>Agregar Nuevo Libro</h2>
 
-            <form action="edit.jsp?id=" method="post" class="container mt-4" onsubmit="showAlert('add');" style="max-width: 600px;">
-                <input type="hidden" name="id" value="">
+            <div class="container mt-4">
+                <div class="row align-items-center">
+                    <!-- Columna del formulario -->
+                    <div class="col-md-6">
+                        <form action="edit.jsp?id=" method="post" onsubmit="showAlert('add');">
+                            <input type="hidden" name="id" value="">
 
-                <div class="mb-3">
-                    <label for="title" class="form-label">Título:</label>
-                    <input type="text" class="form-control w-50" id="title" name="title" required>
-                </div>
+                            <div class="mb-3">
+                                <label for="title" class="form-label">ISBN:</label>
+                                <input type="text" class="form-control" id="title" name="title" required style="width: 300px;">
+                            </div>
 
-                <div class="mb-3">
-                    <label for="author" class="form-label">Autor:</label>
-                    <input type="text" class="form-control w-50" id="author" name="author" required>
-                </div>
+                            <div class="mb-3">
+                                <label for="author" class="form-label">Titulo:</label>
+                                <input type="text" class="form-control" id="author" name="author" required style="width: 300px;">
+                            </div>
 
-                <div class="mb-3">
-                    <label for="isbn" class="form-label">ISBN:</label>
-                    <input type="text" class="form-control w-50" id="isbn" name="isbn" required>
-                </div>
+                            <div class="mb-3">
+                                <label for="isbn" class="form-label">Autor:</label>
+                                <input type="text" class="form-control" id="isbn" name="isbn" required style="width: 300px;">
+                            </div>
 
-                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                    <button type="submit" class="btn btn-success me-md-2">Guardar</button>
+                            
+                            
+                            <div class="mb-3">
+                                <label for="title" class="form-label">Tipo:</label>
+                                <input type="text" class="form-control" id="title" name="title" required style="width: 300px;">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="title" class="form-label">Fecha de Publicacion:</label>
+                                <input type="text" class="form-control" id="title" name="title" required style="width: 300px;">
+                            </div>
+                            
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <button type="submit" class="btn btn-success me-md-2">Guardar</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Columna de la imagen -->
+                    <div class="col-md-6 text-center">
+                        <img src="../img/book.png" alt="Imagen descriptiva" class="img-fluid rounded" style="max-height: 350px;">
+                        <!-- Cambia la URL por tu imagen real -->
+                    </div>
                 </div>
-            </form>
+            </div>
 
             <h2>Lista de Libros</h2>
             <table>
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        <th>ISBN</th>
                         <th>Título</th>
                         <th>Autor</th>
-                        <th>ISBN</th>
+                        <th>Disponible</th> 
+                        <th>Fecha de Publicacion</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -81,8 +107,9 @@
                     <tr>
                         <td>1</td>
                         <td>Ejemplo de Libro</td>
-                        <td>Autor Ejemplo</td>
-                        <td>123456789</td>
+                        <td>Autor Ejemplo</td>        
+                        <td>Si</td>
+                        <td>En los años 1600</td>
                         <td>
                             <a href="edit.jsp?id=1" class="btn btn-success" onclick="showAlert('edit'); return false;">Prestar</a>
                             <a href="edit.jsp?id=1" class="btn btn-warning" onclick="showAlert('edit'); return false;">Editar</a>
