@@ -27,12 +27,12 @@
 </head>
 <body>
     <header>
-        <h1>Sistema de Biblioteca</h1>
+        <h1>Biblioteca</h1>
         <p>Gestión de Préstamos</p>
     </header>
 
-    <nav>
-        <ul>
+    <nav class="text-center">
+        <ul class="mb-4">
             <li><a href="../index.jsp">Inicio</a></li>
             <li><a href="../books/list.jsp">Libros</a></li>
             <li><a href="list.jsp">Préstamos</a></li>

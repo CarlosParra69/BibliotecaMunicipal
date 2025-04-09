@@ -27,7 +27,7 @@
     </head>
     <body>
         <header>
-            <h1>Sistema de Biblioteca</h1>
+            <h1>Biblioteca</h1>
             <p>Gestión de Libros</p>
         </header>
 
@@ -76,8 +76,8 @@
                                 <input type="text" class="form-control" id="title" name="title" required style="width: 300px;">
                             </div>
                             
-                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                <button type="submit" class="btn btn-success me-md-2">Guardar</button>
+                            <div>
+                                <button type="submit" class="btn btn-success">Guardar</button>
                             </div>
                         </form>
                     </div>

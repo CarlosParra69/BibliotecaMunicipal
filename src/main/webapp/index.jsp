@@ -11,11 +11,11 @@
     <body>
         <header>
             <h1>Biblioteca</h1>
-            <p>Sistema de Gestión de Libros</p>
+            <p>Sistema de Gestión de Biblioteca</p>
         </header>
         
-        <nav>
-            <ul>
+        <nav class="text-center">
+            <ul class="mb-4">
                 <li><a href="index.jsp">Inicio</a></li>
                 <li><a href="books/list.jsp">Libros</a></li>
                 <li><a href="loans/list.jsp">Préstamos</a></li>
