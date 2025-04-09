@@ -35,6 +35,31 @@
 }
 
 /* Estilos generales */
+
+/* Estilos para el chatbot */
+#bp-web-widget-container {
+    z-index: 9999;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+}
+
+.bp-widget-web {
+    border-radius: 50%;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
+.bp-widget-widget {
+    width: 60px !important;
+    height: 60px !important;
+    border-radius: 50% !important;
+    background-color: #3a7dff !important;
+}
+
+.bp-widget-side {
+    bottom: 80px !important;
+    right: 20px !important;
+}
 body {
     font-family: 'Arial', sans-serif;
     background-color: var(--bg-color);
@@ -170,4 +195,26 @@ footer {
     margin-top: 20px;
     color: var(--footer-color);
     font-size: 0.9em;
+}
+
+#error {
+  font-size: 2rem;
+  display: none;
+  color: red;
+  font-weight: bold;
+  padding: 1rem;
+  border: 2px solid red;
+  width: 300px;
+  margin: 1rem 0;
+}
+
+#success {
+  font-size: 2rem;
+  display: none;
+  color: green;
+  font-weight: bold;
+  padding: 1rem;
+  border: 2px solid green;
+  width: 300px;
+  margin: 1rem 0;
 }

@@ -25,6 +25,8 @@
     </script>
 </head>
 <body>
+    <script src="https://cdn.botpress.cloud/webchat/v2.3/inject.js"></script>
+    <script src="https://files.bpcontent.cloud/2025/04/08/01/20250408014526-SGBBVDT9.js"></script>
     <header>
         <h1>Biblioteca</h1>
         <p>Editar Préstamo</p>
