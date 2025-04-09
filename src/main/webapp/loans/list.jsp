@@ -54,7 +54,7 @@
                 <!-- Columna del formulario -->
                 <div class="col-md-6">
                     <!-- Historial de préstamos -->
-                    <div class="mt-4">
+                    <div class="mt-2">
                         <h4>Últimos Préstamos</h4>
                         <div class="table-responsive">
                             <table class="table table-sm table-bordered">
@@ -87,10 +87,11 @@
                         <div class="text-muted small">
                             <em>Total de préstamos históricos: 15</em>
                         </div>
-                    </div>
+                    </div>                  
                     <div>
                             <a href="add.jsp" class="btn btn-success">Realizar Prestamo</a>
                     </div>
+                    <br>
                 </div>
 
                 <!-- Columna de la imagen -->

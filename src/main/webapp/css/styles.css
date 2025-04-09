@@ -1,14 +1,52 @@
+:root {
+    /* Variables para modo claro */
+    --bg-color: #f0f4f8;
+    --container-bg: #ffffff;
+    --text-color: #333;
+    --header-bg: #3a7dff;
+    --header-text: white;
+    --nav-link: #3a7dff;
+    --nav-link-hover: #2a5bbf;
+    --dashboard-bg: #f1f1f1;
+    --dashboard-hover: #e0e0e0;
+    --table-border: #ddd;
+    --table-stripe: #f9f9f9;
+    --table-hover: #f1f1f1;
+    --footer-color: #777;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='dark'] {
+    /* Variables para modo oscuro */
+    --bg-color: #1a1a1a;
+    --container-bg: #2d2d2d;
+    --text-color: #e0e0e0;
+    --header-bg: #2a5bbf;
+    --header-text: white;
+    --nav-link: #3a7dff;
+    --nav-link-hover: #5b8eff;
+    --dashboard-bg: #363636;
+    --dashboard-hover: #404040;
+    --table-border: #404040;
+    --table-stripe: #333333;
+    --table-hover: #404040;
+    --footer-color: #888;
+    --shadow-color: rgba(0, 0, 0, 0.3);
+}
+
 /* Estilos generales */
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #f0f4f8; /* Color de fondo suave y neutro */
+    background-color: var(--bg-color);
+    color: var(--text-color);
     margin: 0;
     padding: 20px;
+    transition: background-color 0.3s, color 0.3s;
 }
 
 header {
-    background: #3a7dff; /* Azul brillante */
-    color: white;
+    background: var(--header-bg);
+    color: var(--header-text);
     padding: 20px 0;
     text-align: center;
     border-radius: 8px;
@@ -31,26 +69,26 @@ nav ul li {
 
 nav ul li a {
     text-decoration: none;
-    color: #3a7dff; /* Azul brillante */
+    color: var(--nav-link);
     font-weight: bold;
     transition: color 0.3s;
 }
 
 nav ul li a:hover {
-    color: #2a5bbf; /* Azul más oscuro al pasar el mouse */
+    color: var(--nav-link-hover);
 }
 
 .container {
     max-width: 900px;
     margin: auto;
-    background: #ffffff; /* Fondo blanco para el contenedor */
+    background: var(--container-bg);
     padding: 30px;
     border-radius: 8px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 15px var(--shadow-color);
 }
 
 h1, h2, h3 {
-    color: #333; /* Color de texto oscuro */
+    color: var(--text-color);
 }
 
 .dashboard {
@@ -60,7 +98,7 @@ h1, h2, h3 {
 }
 
 .dashboard-item {
-    background: #f1f1f1; /* Color gris claro */
+    background: var(--dashboard-bg);
     padding: 20px;
     border-radius: 8px;
     flex: 1;
@@ -74,7 +112,7 @@ h1, h2, h3 {
 }
 
 .dashboard-item:hover {
-    background: #e0e0e0; /* Gris más oscuro al pasar el mouse */
+    background: var(--dashboard-hover);
     transform: translateY(-2px); /* Efecto de elevación al pasar el mouse */
 }
 
@@ -109,7 +147,7 @@ table {
 }
 
 table th, table td {
-    border: 1px solid #ddd;
+    border: 1px solid var(--table-border);
     padding: 12px;
     text-align: left;
 }
@@ -120,16 +158,16 @@ table th {
 }
 
 table tr:nth-child(even) {
-    background-color: #f9f9f9; /* Color de fondo alternativo */
+    background-color: var(--table-stripe);
 }
 
 table tr:hover {
-    background-color: #f1f1f1; /* Color de fondo al pasar el mouse */
+    background-color: var(--table-hover);
 }
 
 footer {
     text-align: center;
     margin-top: 20px;
-    color: #777;
+    color: var(--footer-color);
     font-size: 0.9em;
 }
