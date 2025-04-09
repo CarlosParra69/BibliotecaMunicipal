@@ -8,20 +8,15 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
     <script>
-        function showAlert(action) {
-            switch(action) {
-                case 'add':
-                    alert('Préstamo agregado exitosamente.');
-                    break;
-                case 'edit':
-                    alert('Préstamo actualizado exitosamente.');
-                    break;
-                case 'delete':
-                    alert('Préstamo eliminado exitosamente.');
-                    break;
-                default:
-                    break;
+        function validateForm() {
+            var returnDate = new Date(document.getElementById('returnDate').value);
+            var loanDate = new Date(document.getElementById('loanDate').value);
+            
+            if (returnDate < loanDate) {
+                alert('La fecha de devolución debe ser posterior a la fecha de préstamo.');
+                return false;
             }
+            return true;
         }
     </script>
 </head>
@@ -38,6 +33,16 @@
             <li><a href="list.jsp">Préstamos</a></li>
         </ul>
     </nav>
+    <%
+                            // Aquí normalmente se obtendría el ID del préstamo y se buscarían los detalles en la base de datos
+                            String loanId = request.getParameter("id");
+                            // Por ahora usaremos datos de ejemplo
+                            String bookTitle = "Ejemplo de Libro";
+                            String borrowerName = "Juan Pérez";
+                            String loanDate = "2025-01-01";
+                            String returnDate = "2025-01-15";
+                            String status = "Activo";
+                        %>
 
     <div class="container">
         <h2>Agregar Nuevo Préstamo</h2>
@@ -46,33 +51,9 @@
             <div class="row align-items-center">
                 <!-- Columna del formulario -->
                 <div class="col-md-6">
-                    <form action="LoanController" method="post" onsubmit="showAlert('add');">
-                        <input type="hidden" name="id" value="">
-
-                        <div class="mb-3">
-                            <label for="bookId" class="form-label">ID del Libro:</label>
-                            <input type="number" class="form-control" id="bookId" name="bookId" required style="width: 300px;">
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="borrower" class="form-label">Nombre del Prestatario:</label>
-                            <input type="text" class="form-control" id="borrower" name="borrower" required style="width: 300px;">
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="loanDate" class="form-label">Fecha de Préstamo:</label>
-                            <input type="date" class="form-control" id="loanDate" name="loanDate" required style="width: 300px;">
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="returnDate" class="form-label">Fecha de Devolución:</label>
-                            <input type="date" class="form-control" id="returnDate" name="returnDate" required style="width: 300px;">
-                        </div>
-
-                        <div>
-                            <button type="submit" class="btn btn-success">Guardar</button>
-                        </div>
-                    </form>
+                    <div>
+                            <a href="add.jsp" class="btn btn-success">Realizar Prestamo</a>
+                    </div>
                 </div>
 
                 <!-- Columna de la imagen -->
@@ -102,10 +83,11 @@
                     <td>Juan Pérez</td>
                     <td>2025-01-01</td>
                     <td>2025-01-15</td>
-                    <td>
-                        <a href="edit.jsp?id=1" class="btn btn-success" onclick="showAlert('edit'); return false;">Prestar</a>
-                        <a href="edit.jsp?id=1" class="btn btn-warning" onclick="showAlert('edit'); return false;">Editar</a>
-                        <a href="delete.jsp?id=1" class="btn btn-danger" onclick="showAlert('delete'); return false;">Eliminar</a>
+                    <td class="text-center">
+                        <a href="edit.jsp?id=1" class="btn btn-warning">Editar</a>
+                        <a href="return.jsp?id=1" class="btn btn-info text-white">Devolver</a>
+                        <a href="delete.jsp?id=1" class="btn btn-danger">Eliminar</a>
+                        
                     </td>
                 </tr>
             </tbody>
