@@ -40,28 +40,47 @@
     </nav>
 
     <div class="container">
-        <h2>Agregar/Editar Préstamo</h2>
+        <h2>Agregar Nuevo Préstamo</h2>
 
-        <form action="LoanController" method="post" class="form" onsubmit="showAlert('add');">
-            <input type="hidden" name="id" value="">
-            <div class="form-group">
-                <label for="bookId">ID del Libro:</label>
-                <input type="number" id="bookId" name="bookId" required>
+        <div class="container mt-4">
+            <div class="row align-items-center">
+                <!-- Columna del formulario -->
+                <div class="col-md-6">
+                    <form action="LoanController" method="post" onsubmit="showAlert('add');">
+                        <input type="hidden" name="id" value="">
+
+                        <div class="mb-3">
+                            <label for="bookId" class="form-label">ID del Libro:</label>
+                            <input type="number" class="form-control" id="bookId" name="bookId" required style="width: 300px;">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="borrower" class="form-label">Nombre del Prestatario:</label>
+                            <input type="text" class="form-control" id="borrower" name="borrower" required style="width: 300px;">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="loanDate" class="form-label">Fecha de Préstamo:</label>
+                            <input type="date" class="form-control" id="loanDate" name="loanDate" required style="width: 300px;">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="returnDate" class="form-label">Fecha de Devolución:</label>
+                            <input type="date" class="form-control" id="returnDate" name="returnDate" required style="width: 300px;">
+                        </div>
+
+                        <div>
+                            <button type="submit" class="btn btn-success">Guardar</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Columna de la imagen -->
+                <div class="col-md-6 text-center">
+                    <img src="../img/loan.png" alt="Imagen de préstamo" class="img-fluid rounded" style="max-height: 350px;">
+                </div>
             </div>
-            <div class="form-group">
-                <label for="borrower">Nombre del Prestatario:</label>
-                <input type="text" id="borrower" name="borrower" required>
-            </div>
-            <div class="form-group">
-                <label for="loanDate">Fecha de Préstamo:</label>
-                <input type="date" id="loanDate" name="loanDate" required>
-            </div>
-            <div class="form-group">
-                <label for="returnDate">Fecha de Devolución:</label>
-                <input type="date" id="returnDate" name="returnDate" required>
-            </div>
-            <input type="submit" value="Guardar" class="btn btn-success">
-        </form>
+        </div>
 
         <h2>Lista de Préstamos</h2>
         <table>
