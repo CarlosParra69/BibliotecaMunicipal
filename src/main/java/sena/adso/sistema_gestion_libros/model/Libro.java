@@ -5,15 +5,17 @@ public abstract class Libro {
     private String isbn;
     private String titulo;
     private String autor;
-    private boolean disponible;
+    private String tipo;
     private int fechaPublicacion;
+    private boolean disponible;
 
-    public Libro(String isbn, String titulo, String autor, boolean disponible, int fechaPublicacion) {
+    public Libro(String isbn, String titulo, String autor, String tipo, int fechaPublicacion, boolean disponible) {
         this.isbn = isbn;
         this.titulo = titulo;
         this.autor = autor;
-        this.disponible = disponible;
+        this.tipo = tipo;
         this.fechaPublicacion = fechaPublicacion;
+        this.disponible = disponible;
     }
 
     public String getIsbn() {
@@ -40,12 +42,12 @@ public abstract class Libro {
         this.autor = autor;
     }
 
-    public boolean isDisponible() {
-        return disponible;
+    public String getTipo() {
+        return tipo;
     }
 
-    public void setDisponible(boolean disponible) {
-        this.disponible = disponible;
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 
     public int getFechaPublicacion() {
@@ -55,13 +57,23 @@ public abstract class Libro {
     public void setFechaPublicacion(int fechaPublicacion) {
         this.fechaPublicacion = fechaPublicacion;
     }
-    public abstract String getDescripcion();
+
+    public boolean isDisponible() {
+        return disponible;
+    }
+
+    public void setDisponible(boolean disponible) {
+        this.disponible = disponible;
+    }
+    
+    public abstract String getDescription();
 
     @Override
     public String toString() {
-        return "Libro{" + "isbn=" + isbn + ", titulo=" + titulo + ", autor=" + autor + ", disponible=" + disponible + ", fechaPublicacion=" + fechaPublicacion + '}';
+        return "ISBN: " + isbn + ", TITULO, " + titulo + ", AUTOR: " + autor + 
+                ", TIPO: " + tipo + ", FECHA PUBLICACION: " + fechaPublicacion + ", DISPONIBLE: " + (disponible ? "YES" : "NO");
     }
     
     
-    
+
 }
