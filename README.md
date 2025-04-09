@@ -21,7 +21,7 @@ Este proyecto es un **Sistema de Gestión de Biblioteca** desarrollado con **Jav
 - Java (Servlets + JSP)
 - HTML5 / CSS3 / JavaScript
 - Bootstrap (para el diseño responsivo)
-- MySQL (como base de datos relacional)
+- MySQL (como base de datos relacional)//no implementado
 - Apache Tomcat (servidor de aplicaciones)
 - JSTL (Librería estándar de etiquetas JSP)
 
@@ -46,7 +46,7 @@ El chatbot puede ser extendido con respuestas personalizadas y mejoras mediante 
 
 - Java JDK 8 o superior
 - Apache Tomcat 9+
-- MySQL Server
+- MySQL Server//no implementado
 - Maven (opcional, si usas proyecto tipo Maven)
 - IDE recomendado: Eclipse, IntelliJ o NetBeans
 
