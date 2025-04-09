@@ -40,48 +40,55 @@
         </nav>
 
         <div class="container">
-            <h2>Agregar Nuevo Libro</h2>
+            <h2>Gestion de Libros</h2>
+            <div class="alert alert-info" role="alert">
+                <strong>Total de Libros Disponibles:</strong> 2
+            </div>
 
             <div class="container mt-4">
                 <div class="row align-items-center">
                     <!-- Columna del formulario -->
                     <div class="col-md-6">
-                        <form action="edit.jsp?id=" method="post" onsubmit="showAlert('add');">
-                            <input type="hidden" name="id" value="">
-
-                            <div class="mb-3">
-                                <label for="title" class="form-label">ISBN:</label>
-                                <input type="text" class="form-control" id="title" name="title" required style="width: 300px;">
+                        <!-- Historial de libro -->
+                        <div class="mt-2">
+                            <h4>Últimos Libros Agregados</h4>
+                            <div class="table-responsive">
+                                <table class="table table-sm table-bordered">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Libro</th>
+                                            <th>Fecha</th>
+                                            <th>Estado</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Don Quijote</td>
+                                            <td>2025-01-01</td>
+                                            <td><span class="badge bg-warning">Prestado</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Cien años de soledad</td>
+                                            <td>2024-12-28</td>
+                                            <td><span class="badge bg-secondary">No Disponible</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>La Odisea</td>
+                                            <td>2024-12-25</td>
+                                            <td><span class="badge bg-success">Disponible</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
-
-                            <div class="mb-3">
-                                <label for="author" class="form-label">Titulo:</label>
-                                <input type="text" class="form-control" id="author" name="author" required style="width: 300px;">
+                            <div class="text-muted small">
+                                <em>Total de libros históricos: 15</em>
                             </div>
-
-                            <div class="mb-3">
-                                <label for="isbn" class="form-label">Autor:</label>
-                                <input type="text" class="form-control" id="isbn" name="isbn" required style="width: 300px;">
-                            </div>
-
-                            
-                            
-                            <div class="mb-3">
-                                <label for="title" class="form-label">Tipo:</label>
-                                <input type="text" class="form-control" id="title" name="title" required style="width: 300px;">
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label for="title" class="form-label">Fecha de Publicacion:</label>
-                                <input type="text" class="form-control" id="title" name="title" required style="width: 300px;">
-                            </div>
-                            
-                            <div>
-                                <button type="submit" class="btn btn-success">Guardar</button>
-                            </div>
-                        </form>
+                        </div>
+                        <div>
+                            <a href="add.jsp" class="btn btn-success">Agregar Nuevo Libro</a>
+                        </div>
+                        <br>
                     </div>
-
                     <!-- Columna de la imagen -->
                     <div class="col-md-6 text-center">
                         <img src="../img/book.png" alt="Imagen descriptiva" class="img-fluid rounded" style="max-height: 350px;">

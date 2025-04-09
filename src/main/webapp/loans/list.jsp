@@ -45,7 +45,7 @@
                         %>
 
     <div class="container">
-        <h2>Préstamos Pendientes</h2>
+        <h2>Gestion de Prestamos</h2>
         <div class="alert alert-info" role="alert">
             <strong>Total de préstamos pendientes:</strong> 2
         </div>
