@@ -106,7 +106,7 @@
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>ID del Libro</th>
+                    <th>ISBN</th>
                     <th>Nombre del Prestatario</th>
                     <th>Fecha de Préstamo</th>
                     <th>Fecha de Devolución</th>

@@ -3,83 +3,98 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Editar Libro - Sistema de Biblioteca</title>
+    <title>Editar Préstamo - Sistema de Biblioteca</title>
     <link rel="stylesheet" href="../css/styles.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
     <script>
-        function showAlert(action) {
-            switch(action) {
-                case 'add':
-                    alert('Libro agregado exitosamente.');
-                    break;
-                case 'edit':
-                    alert('Libro actualizado exitosamente.');
-                    break;
-                case 'delete':
-                    alert('Libro eliminado exitosamente.');
-                    break;
-                default:
-                    break;
+        function validateForm() {
+            var returnDate = new Date(document.getElementById('returnDate').value);
+            var loanDate = new Date(document.getElementById('loanDate').value);
+            
+            if (returnDate < loanDate) {
+                alert('La fecha de devolución debe ser posterior a la fecha de préstamo.');
+                return false;
             }
+            return true;
+        }
+
+        function showAlert() {
+            alert('Préstamo actualizado exitosamente.');
         }
     </script>
 </head>
 <body>
     <header>
-        <h1>Sistema de Biblioteca</h1>
-        <p>Gestión de Libros</p>
+        <h1>Biblioteca</h1>
+        <p>Editar Libro</p>
     </header>
 
-    <nav>
-        <ul>
+    <nav class="text-center">
+        <ul class="mb-4">
             <li><a href="../index.jsp">Inicio</a></li>
-            <li><a href="list.jsp">Libros</a></li>
-            <li><a href="../loans/list.jsp">Préstamos</a></li>
+            <li><a href="../books/list.jsp">Libros</a></li>
+            <li><a href="list.jsp">Préstamos</a></li>
         </ul>
     </nav>
 
     <div class="container">
-        <h2>Editar Libro</h2>
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <%
+                    // Aquí normalmente se obtendría el ID del préstamo y se buscarían los datos en la base de datos
+                    String loanId = request.getParameter("id");
+                    // Por ahora usaremos datos de ejemplo
+                    String bookId = "1";
+                    String bookTitle = "Ejemplo de Libro";
+                    String borrowerName = "Juan Pérez";
+                    String loanDate = "2025-01-01";
+                    String returnDate = "2025-01-15";
+                %>
 
-        <%
-            // Obtener el ID del libro de la URL
-            String bookId = request.getParameter("id");
-            
-            // Aquí normalmente se haría una consulta a la base de datos para obtener los datos del libro
-            // Por ahora, usaremos datos de ejemplo
-            String bookTitle = "Ejemplo de Libro";
-            String bookAuthor = "Autor Ejemplo";
-            String bookIsbn = "123456789";
-            
-            // En un caso real, se obtendría el libro de la base de datos usando el ID
-            // Book book = BookDAO.getBookById(Integer.parseInt(bookId));
-            // String bookTitle = book.getTitle();
-            // String bookAuthor = book.getAuthor();
-            // String bookIsbn = book.getIsbn();
-        %>
+                <div class="card">
+                    <div class="card-header bg-warning text-dark">
+                        <h3 class="mb-0">Editar Libro #<%= loanId %></h3>
+                    </div>
+                    <div class="card-body">
+                        <form action="LoanController" method="post" onsubmit="return validateForm() && showAlert();">
+                            <input type="hidden" name="action" value="update">
+                            <input type="hidden" name="id" value="<%= loanId %>">
+                            <input type="hidden" name="bookId" value="<%= bookId %>">
 
-        <form action="BookController" method="post" class="form" onsubmit="showAlert('edit');">
-            <input type="hidden" name="action" value="update">
-            <input type="hidden" name="id" value="<%= bookId %>">
-            <div class="form-group">
-                <label for="title">Título:</label>
-                <input type="text" id="title" name="title" value="<%= bookTitle %>" required>
-            </div>
-            <div class="form-group">
-                <label for="author">Autor:</label>
-                <input type="text" id="author" name="author" value="<%= bookAuthor %>" required>
-            </div>
-            <div class="form-group">
-                <label for="isbn">ISBN:</label>
-                <input type="text" id="isbn" name="isbn" value="<%= bookIsbn %>" required>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Actualizar" class="btn btn-success">
-                <a href="list.jsp" class="btn btn-secondary">Cancelar</a>
-            </div>
-        </form>
+                            <div class="mb-3">
+                                <label for="bookTitle" class="form-label">Libro:</label>
+                                <input type="text" class="form-control" id="bookTitle" value="<%= bookTitle %>" readonly>
+                            </div>
 
+                            <div class="mb-3">
+                                <label for="borrower" class="form-label">Nombre del Prestatario:</label>
+                                <input type="text" class="form-control" id="borrower" name="borrower" value="<%= borrowerName %>" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="loanDate" class="form-label">Fecha de Préstamo:</label>
+                                <input type="date" class="form-control" id="loanDate" name="loanDate" value="<%= loanDate %>" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="returnDate" class="form-label">Fecha de Devolución:</label>
+                                <input type="date" class="form-control" id="returnDate" name="returnDate" value="<%= returnDate %>" required>
+                            </div>
+
+                            <div class="text-center mt-4">
+                                <button type="submit" class="btn btn-warning">Actualizar Libro</button>
+                                <a href="list.jsp" class="btn btn-secondary">Cancelar</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 text-center">
+                <img src="../img/loan.png" alt="Imagen de préstamo" class="img-fluid rounded" style="max-height: 350px;">
+            </div>
+        </div>
     </div>
 
     <footer>

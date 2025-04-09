@@ -97,6 +97,7 @@
                         <th>ISBN</th>
                         <th>Título</th>
                         <th>Autor</th>
+                        <th>Tipo</th>
                         <th>Disponible</th> 
                         <th>Fecha de Publicacion</th>
                         <th>Acciones</th>
@@ -107,12 +108,13 @@
                     <tr>
                         <td>1</td>
                         <td>Ejemplo de Libro</td>
-                        <td>Autor Ejemplo</td>        
+                        <td>Autor Ejemplo</td>  
+                        <td>Novela</td>
                         <td>Si</td>
                         <td>En los años 1600</td>
                         <td class="text-center">
-                            <a href="edit.jsp?id=1" class="btn btn-warning" onclick="showAlert('edit'); return false;">Editar</a>
-                            <a href="delete.jsp?id=1" class="btn btn-danger" onclick="showAlert('delete'); return false;">Eliminar</a>
+                            <a href="edit.jsp?id=1" class="btn btn-warning">Editar</a>
+                            <a href="delete.jsp?id=1" class="btn btn-danger">Eliminar</a>
                         </td>
                     </tr>
                 </tbody>
