@@ -6,7 +6,9 @@ public class LibroFiccion extends Libro{
     private boolean esSerie;
 
     public LibroFiccion(String isbn, String titulo, String autor, String tipo, int fechaPublicacion, boolean disponible) {
-        super(isbn, titulo, autor, tipo, fechaPublicacion, disponible);
+        super(isbn, titulo, autor, "ficcion", fechaPublicacion, disponible);
+        this.genero = genero;
+        this.esSerie = esSerie;
     }
 
    
