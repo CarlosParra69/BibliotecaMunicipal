@@ -45,12 +45,49 @@
                         %>
 
     <div class="container">
-        <h2>Agregar Nuevo Préstamo</h2>
-
+        <h2>Préstamos Pendientes</h2>
+        <div class="alert alert-info" role="alert">
+            <strong>Total de préstamos pendientes:</strong> 2
+        </div>
         <div class="container mt-4">
             <div class="row align-items-center">
                 <!-- Columna del formulario -->
                 <div class="col-md-6">
+                    <!-- Historial de préstamos -->
+                    <div class="mt-4">
+                        <h4>Últimos Préstamos</h4>
+                        <div class="table-responsive">
+                            <table class="table table-sm table-bordered">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Libro</th>
+                                        <th>Fecha</th>
+                                        <th>Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Don Quijote</td>
+                                        <td>2025-01-01</td>
+                                        <td><span class="badge bg-warning">Pendiente</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Cien años de soledad</td>
+                                        <td>2024-12-28</td>
+                                        <td><span class="badge bg-success">Devuelto</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>La Odisea</td>
+                                        <td>2024-12-25</td>
+                                        <td><span class="badge bg-success">Devuelto</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="text-muted small">
+                            <em>Total de préstamos históricos: 15</em>
+                        </div>
+                    </div>
                     <div>
                             <a href="add.jsp" class="btn btn-success">Realizar Prestamo</a>
                     </div>
@@ -84,8 +121,8 @@
                     <td>2025-01-01</td>
                     <td>2025-01-15</td>
                     <td class="text-center">
-                        <a href="edit.jsp?id=1" class="btn btn-warning">Editar</a>
-                        <a href="return.jsp?id=1" class="btn btn-info text-white">Devolver</a>
+                        <a href="return.jsp?id=1" class="btn btn-success text-white">Devolver</a>
+                        <a href="edit.jsp?id=1" class="btn btn-warning">Editar</a>                     
                         <a href="delete.jsp?id=1" class="btn btn-danger">Eliminar</a>
                         
                     </td>
