@@ -1,21 +1,20 @@
 package sena.adso.sistema_gestion_libros.model;
 
 public abstract class Libro {
-    
     private String isbn;
     private String titulo;
     private String autor;
     private String tipo;
-    private int fechaPublicacion;
+    private int añoPublicacion;
     private boolean disponible;
 
-    public Libro(String isbn, String titulo, String autor, String tipo, int fechaPublicacion, boolean disponible) {
+    public Libro(String isbn, String titulo, String autor, String tipo, int añoPublicacion) {
         this.isbn = isbn;
         this.titulo = titulo;
         this.autor = autor;
         this.tipo = tipo;
-        this.fechaPublicacion = fechaPublicacion;
-        this.disponible = disponible;
+        this.añoPublicacion = añoPublicacion;
+        this.disponible = true; // Por defecto, el libro está disponible
     }
 
     public String getIsbn() {
@@ -50,12 +49,12 @@ public abstract class Libro {
         this.tipo = tipo;
     }
 
-    public int getFechaPublicacion() {
-        return fechaPublicacion;
+    public int getAñoPublicacion() {
+        return añoPublicacion;
     }
 
-    public void setFechaPublicacion(int fechaPublicacion) {
-        this.fechaPublicacion = fechaPublicacion;
+    public void setAñoPublicacion(int añoPublicacion) {
+        this.añoPublicacion = añoPublicacion;
     }
 
     public boolean isDisponible() {
@@ -65,15 +64,14 @@ public abstract class Libro {
     public void setDisponible(boolean disponible) {
         this.disponible = disponible;
     }
-    
-    public abstract String getDescription();
+
+    // Método abstracto para que cada tipo de libro lo implemente a su manera
+    public abstract String getDescripcion();
 
     @Override
     public String toString() {
-        return "ISBN: " + isbn + ", TITULO, " + titulo + ", AUTOR: " + autor + 
-                ", TIPO: " + tipo + ", FECHA PUBLICACION: " + fechaPublicacion + ", DISPONIBLE: " + (disponible ? "YES" : "NO");
+        return "ISBN: " + isbn + ", Título: " + titulo + ", Autor: " + autor +
+               ", Tipo: " + tipo + ", Año de Publicación: " + añoPublicacion +
+               ", Disponible: " + (disponible ? "Sí" : "No");
     }
-    
-    
-
 }

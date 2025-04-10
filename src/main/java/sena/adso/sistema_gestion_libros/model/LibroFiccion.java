@@ -1,17 +1,14 @@
 package sena.adso.sistema_gestion_libros.model;
 
-public class LibroFiccion extends Libro{
-    
-    private String genero; 
+public class LibroFiccion extends Libro {
+    private String genero; // fantasía, ciencia ficción, misterio, etc.
     private boolean esSerie;
 
-    public LibroFiccion(String isbn, String titulo, String autor, String tipo, int fechaPublicacion, boolean disponible) {
-        super(isbn, titulo, autor, "ficcion", fechaPublicacion, disponible);
+    public LibroFiccion(String isbn, String titulo, String autor, String condicion, String genero, boolean esSerie, int añoPublicacion) {
+        super(isbn, titulo, autor, "Ficción", añoPublicacion);
         this.genero = genero;
         this.esSerie = esSerie;
     }
-
-   
 
     public String getGenero() {
         return genero;
@@ -28,21 +25,16 @@ public class LibroFiccion extends Libro{
     public void setEsSerie(boolean esSerie) {
         this.esSerie = esSerie;
     }
-    
-    
-    
+
     @Override
-    public String getDescription() {
-       return getTitulo()+ "Libro de género de ficción (fantasía, etc.)";
+    public String getDescripcion() {
+        return getTitulo() + " es un libro de ficción del género " + genero +
+               (esSerie ? ", y forma parte de una serie." : ", y es una historia independiente.");
     }
- 
+
     @Override
     public String toString() {
-        return super.toString() + "Forma parte de una serie: "+ esSerie + (esSerie ? "Yes" : "No");
+        return super.toString() + ", Género: " + genero +
+               ", Parte de una serie: " + (esSerie ? "Sí" : "No");
     }
-
-
-    
-    
-      
 }
