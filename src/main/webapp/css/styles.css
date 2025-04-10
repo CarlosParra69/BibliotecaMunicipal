@@ -14,24 +14,76 @@
     --table-hover: #f1f1f1;
     --footer-color: #777;
     --shadow-color: rgba(0, 0, 0, 0.1);
+    --btn-primary-bg: #3a7dff;
+    --btn-primary-hover: #2a5bbf;
 }
 
 [data-theme='dark'] {
     /* Variables para modo oscuro */
-    --bg-color: #1a1a1a;
-    --container-bg: #2d2d2d;
+    --bg-color: #121212;
+    --container-bg: #1e1e1e;
     --text-color: #e0e0e0;
-    --header-bg: #2a5bbf;
-    --header-text: white;
-    --nav-link: #3a7dff;
-    --nav-link-hover: #5b8eff;
-    --dashboard-bg: #363636;
-    --dashboard-hover: #404040;
+    --header-bg: #1a3d80;
+    --header-text: #e0e0e0;
+    --nav-link: #5b8eff;
+    --nav-link-hover: #7ca2ff;
+    --dashboard-bg: #2c2c2c;
+    --dashboard-hover: #3a3a3a;
     --table-border: #404040;
-    --table-stripe: #333333;
-    --table-hover: #404040;
-    --footer-color: #888;
+    --table-stripe: #2a2a2a;
+    --table-hover: #3a3a3a;
+    --footer-color: #a0a0a0;
     --shadow-color: rgba(0, 0, 0, 0.3);
+    /* Nuevas variables para elementos Bootstrap */
+    --card-bg: #1e1e1e;
+    --card-border: #404040;
+    --input-bg: #2c2c2c;
+    --input-text: #e0e0e0;
+    --input-border: #404040;
+    --btn-default-bg: #2c2c2c;
+    --btn-default-text: #e0e0e0;
+    --alert-bg: #2c2c2c;
+    --alert-border: #404040;
+    --alert-text: #e0e0e0;
+    --btn-primary-bg: #1a3d80;
+    --btn-primary-hover: #2a5bbf;
+}
+
+/* Selector de tema */
+.theme-selector {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background: var(--container-bg);
+    border-radius: 25px;
+    padding: 10px;
+    box-shadow: 0 2px 10px var(--shadow-color);
+    display: flex;
+    align-items: center;
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+.theme-selector:hover {
+    transform: translateY(-2px);
+}
+
+.theme-selector select {
+    background: var(--container-bg);
+    color: var(--text-color);
+    border: 1px solid var(--table-border);
+    border-radius: 15px;
+    padding: 5px 25px 5px 10px;
+    margin-left: 10px;
+    cursor: pointer;
+    outline: none;
+    font-size: 14px;
+}
+
+.theme-selector .icon {
+    font-size: 20px;
+    margin-right: 5px;
+    color: var(--text-color);
 }
 
 /* Estilos generales */
@@ -60,6 +112,84 @@
     bottom: 80px !important;
     right: 20px !important;
 }
+
+/* Estilos para modo oscuro - elementos Bootstrap */
+[data-theme='dark'] .card,
+.dark-theme .card {
+    background-color: var(--card-bg) !important;
+    border-color: var(--card-border) !important;
+    color: var(--text-color) !important;
+}
+
+[data-theme='dark'] .form-control,
+[data-theme='dark'] .form-select,
+.dark-theme .form-control,
+.dark-theme .form-select {
+    background-color: var(--input-bg) !important;
+    border-color: var(--input-border) !important;
+    color: var(--input-text) !important;
+}
+
+[data-theme='dark'] .table,
+.dark-theme .table {
+    color: var(--text-color) !important;
+    border-color: var(--table-border) !important;
+}
+
+[data-theme='dark'] .table-bordered,
+.dark-theme .table-bordered {
+    border-color: var(--table-border) !important;
+}
+
+[data-theme='dark'] .table-striped tbody tr:nth-of-type(odd),
+.dark-theme .table-striped tbody tr:nth-of-type(odd) {
+    background-color: var(--table-stripe) !important;
+}
+
+[data-theme='dark'] .alert,
+.dark-theme .alert {
+    background-color: var(--alert-bg) !important;
+    border-color: var(--alert-border) !important;
+    color: var(--alert-text) !important;
+}
+
+[data-theme='dark'] .btn-secondary,
+.dark-theme .btn-secondary {
+    background-color: var(--btn-default-bg) !important;
+    border-color: var(--btn-default-bg) !important;
+    color: var(--btn-default-text) !important;
+}
+
+[data-theme='dark'] .btn-primary,
+.dark-theme .btn-primary {
+    background-color: var(--btn-primary-bg) !important;
+    border-color: var(--btn-primary-bg) !important;
+}
+
+[data-theme='dark'] .btn-primary:hover,
+.dark-theme .btn-primary:hover {
+    background-color: var(--btn-primary-hover) !important;
+    border-color: var(--btn-primary-hover) !important;
+}
+
+[data-theme='dark'] .badge,
+.dark-theme .badge {
+    border: 1px solid var(--card-border) !important;
+}
+
+[data-theme='dark'] .modal-content,
+.dark-theme .modal-content {
+    background-color: var(--container-bg) !important;
+    color: var(--text-color) !important;
+    border-color: var(--card-border) !important;
+}
+
+[data-theme='dark'] .navbar,
+.dark-theme .navbar {
+    background-color: var(--header-bg) !important;
+    color: var(--header-text) !important;
+}
+
 body {
     font-family: 'Arial', sans-serif;
     background-color: var(--bg-color);
@@ -67,6 +197,13 @@ body {
     margin: 0;
     padding: 20px;
     transition: background-color 0.3s, color 0.3s;
+}
+
+/* Asegurar que el modo oscuro afecte a elementos de Bootstrap */
+[data-theme='dark'] body,
+.dark-theme body {
+    background-color: var(--bg-color) !important;
+    color: var(--text-color) !important;
 }
 
 header {
@@ -178,8 +315,8 @@ table th, table td {
 }
 
 table th {
-    background-color: #3a7dff; /* Azul brillante */
-    color: white;
+    background-color: var(--header-bg);
+    color: var(--header-text);
 }
 
 table tr:nth-child(even) {
@@ -217,4 +354,23 @@ footer {
   border: 2px solid green;
   width: 300px;
   margin: 1rem 0;
+}
+
+/* Asegurar que todos los elementos con fondo blanco en modo claro tengan el fondo oscuro correcto */
+[data-theme='dark'] .bg-white,
+[data-theme='dark'] .bg-light,
+.dark-theme .bg-white,
+.dark-theme .bg-light {
+    background-color: var(--container-bg) !important;
+}
+
+/* Ajustar enlaces en modo oscuro */
+[data-theme='dark'] a:not(.btn),
+.dark-theme a:not(.btn) {
+    color: var(--nav-link);
+}
+
+[data-theme='dark'] a:hover:not(.btn),
+.dark-theme a:hover:not(.btn) {
+    color: var(--nav-link-hover);
 }
