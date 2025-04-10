@@ -1,3 +1,10 @@
+<%@page import="sena.adso.sistema_gestion_libros.model.LibroReferencia"%>
+<%@page import="sena.adso.sistema_gestion_libros.model.LibroNoFiccion"%>
+<%@page import="sena.adso.sistema_gestion_libros.model.LibroFiccion"%>
+<%@page import="sena.adso.sistema_gestion_libros.model.Libro"%>
+<%@page import="sena.adso.sistema_gestion_libros.model.LibroManager"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="java.text.SimpleDateFormat"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -6,8 +13,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Libros - Sistema de Biblioteca</title>
         <link rel="icon" href="../img/book-closed-svgrepo-com.svg" type="image/svg+xml">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+        <link rel="stylesheet" href="../css/styles.css">
         <%-- Incluir scripts y estilos para tema --%>
         <%@ include file="/includes/theme-script.jsp" %>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
         <script>
             function showAlert(action) {
                 switch (action) {
@@ -24,6 +34,15 @@
                         break;
                 }
             }
+            
+            // Verificar si hay un parámetro de acción en la URL
+            window.onload = function() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const action = urlParams.get('action');
+                if (action) {
+                    showAlert(action);
+                }
+            };
         </script>
     </head>
     <body>
@@ -43,9 +62,30 @@
         </nav>
 
         <div class="container">
-            <h2>Gestion de Libros</h2>
+            <%
+                // Obtener el gestor de libros
+                LibroManager manager = LibroManager.getInstance();
+                
+                // Obtener todos los libros
+                ArrayList<Libro> todosLosLibros = manager.getTodosLosLibros();
+                
+                // Obtener libros disponibles
+                ArrayList<Libro> librosDisponibles = manager.getLibrosDisponibles();
+                
+                // Calcular el número de libros disponibles
+                int numLibrosDisponibles = librosDisponibles.size();
+                
+                // Obtener los últimos 3 libros agregados (o menos si no hay suficientes)
+                ArrayList<Libro> ultimosLibros = new ArrayList<>();
+                int numUltimosLibros = Math.min(todosLosLibros.size(), 3);
+                for (int i = 0; i < numUltimosLibros; i++) {
+                    ultimosLibros.add(todosLosLibros.get(todosLosLibros.size() - 1 - i));
+                }
+            %>
+            
+            <h2>Gestión de Libros</h2>
             <div class="alert alert-info" role="alert">
-                <strong>Total de Libros Disponibles:</strong> 2
+                <strong>Total de Libros Disponibles:</strong> <%= numLibrosDisponibles %>
             </div>
 
             <div class="container mt-4">
@@ -60,75 +100,105 @@
                                     <thead class="table-light">
                                         <tr>
                                             <th>Libro</th>
-                                            <th>Fecha</th>
+                                            <th>Autor</th>
                                             <th>Estado</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>Don Quijote</td>
-                                            <td>2025-01-01</td>
-                                            <td><span class="badge bg-warning">Prestado</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Cien años de soledad</td>
-                                            <td>2024-12-28</td>
-                                            <td><span class="badge bg-secondary">No Disponible</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td>La Odisea</td>
-                                            <td>2024-12-25</td>
-                                            <td><span class="badge bg-success">Disponible</span></td>
-                                        </tr>
+                                        <% if (ultimosLibros.isEmpty()) { %>
+                                            <tr>
+                                                <td colspan="3" class="text-center">No hay libros registrados</td>
+                                            </tr>
+                                        <% } else { %>
+                                            <% for (Libro libro : ultimosLibros) { %>
+                                                <tr>
+                                                    <td><%= libro.getTitulo() %></td>
+                                                    <td><%= libro.getAutor() %></td>
+                                                    <td>
+                                                        <% if (libro.isDisponible()) { %>
+                                                            <span class="badge bg-success">Disponible</span>
+                                                        <% } else { %>
+                                                            <span class="badge bg-warning">Prestado</span>
+                                                        <% } %>
+                                                    </td>
+                                                </tr>
+                                            <% } %>
+                                        <% } %>
                                     </tbody>
                                 </table>
                             </div>
                             <div class="text-muted small">
-                                <em>Total de libros históricos: 15</em>
+                                <em>Total de libros: <%= todosLosLibros.size() %></em>
                             </div>
                         </div>
-                        <div>
-                            <a href="add.jsp" class="btn btn-success">Agregar Nuevo Libro</a>
+                        <div class="mt-3">
+                            <a href="add-book.jsp" class="btn btn-success">Agregar Nuevo Libro</a>
                         </div>
                         <br>
                     </div>
                     <!-- Columna de la imagen -->
                     <div class="col-md-6 text-center">
                         <img src="../img/book.png" alt="Imagen descriptiva" class="img-fluid rounded" style="max-height: 350px;">
-                        <!-- Cambia la URL por tu imagen real -->
+                        <div class="mt-3">
+                            <div class="alert alert-light">
+                                <p><strong>Gestión de Biblioteca</strong></p>
+                                <p>Administre su colección de libros de manera eficiente.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <h2>Lista de Libros</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ISBN</th>
-                        <th>Título</th>
-                        <th>Autor</th>
-                        <th>Tipo</th>
-                        <th>Disponible</th> 
-                        <th>Fecha de Publicacion</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Aquí se mostrarían los libros -->
-                    <tr>
-                        <td>1</td>
-                        <td>Ejemplo de Libro</td>
-                        <td>Autor Ejemplo</td>  
-                        <td>Novela</td>
-                        <td>Si</td>
-                        <td>En los años 1600</td>
-                        <td class="text-center">
-                            <a href="edit.jsp?id=1" class="btn btn-warning">Editar</a>
-                            <a href="delete.jsp?id=1" class="btn btn-danger">Eliminar</a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            
+            <% if (todosLosLibros.isEmpty()) { %>
+                <div class="alert alert-warning">
+                    <p>No hay libros registrados en el sistema.</p>
+                </div>
+            <% } else { %>
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>ISBN</th>
+                                <th>Título</th>
+                                <th>Autor</th>
+                                <th>Tipo</th>
+                                <th>Año</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% for (Libro libro : todosLosLibros) { %>
+                                <tr>
+                                    <td><%= libro.getIsbn() %></td>
+                                    <td><%= libro.getTitulo() %></td>
+                                    <td><%= libro.getAutor() %></td>  
+                                    <td><%= libro.getTipo() %></td>
+                                    <td><%= libro.getAñoPublicacion() %></td>
+                                    <td>
+                                        <% if (libro.isDisponible()) { %>
+                                            <span class="badge bg-success">Disponible</span>
+                                        <% } else { %>
+                                            <span class="badge bg-warning">Prestado</span>
+                                        <% } %>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a href="edit-book.jsp?isbn=<%= libro.getIsbn() %>" class="btn btn-warning btn-sm">Editar</a>
+                                            <a href="delete-book.jsp?isbn=<%= libro.getIsbn() %>" class="btn btn-danger btn-sm">Eliminar</a>
+                                            <% if (libro.isDisponible()) { %>
+                                                <a href="../loans/add-loan.jsp?isbn=<%= libro.getIsbn() %>" class="btn btn-primary btn-sm">Prestar</a>
+                                            <% } %>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            <% } %>
         </div>
 
         <footer>
