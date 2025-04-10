@@ -4,6 +4,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Detalles del Préstamo - Sistema de Biblioteca</title>
+    <link rel="icon" href="../img/book-closed-svgrepo-com.svg" type="image/svg+xml">
     <link rel="stylesheet" href="../css/styles.css">
     <%-- Incluir scripts y estilos para tema --%>
         <%@ include file="/includes/theme-script.jsp" %>

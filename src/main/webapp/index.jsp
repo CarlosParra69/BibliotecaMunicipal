@@ -5,6 +5,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Biblioteca - Sistema de Gestión de Libros</title>
+        <link rel="icon" href="img/book-closed-svgrepo-com.svg" type="image/svg+xml">
         <%-- Incluir scripts y estilos para tema --%>
         <%@ include file="/includes/theme-script.jsp" %>
     </head>
