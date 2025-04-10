@@ -106,7 +106,7 @@
                             </div>
                             
                             <div class="mb-3">
-                                <label for="idPrestatario" class="form-label">ID del Prestatario:</label>
+                                <label for="idPrestatario" class="form-label">Cedula del Prestatario:</label>
                                 <input type="text" class="form-control" id="idPrestatario" name="idPrestatario" value="<%= prestamo.getIdPrestatario() %>" required>
                             </div>
 
