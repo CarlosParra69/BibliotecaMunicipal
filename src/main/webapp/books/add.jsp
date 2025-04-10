@@ -1,4 +1,7 @@
 <%@page import="sena.adso.sistema_gestion_libros.model.*"%>
+<%@page import="java.io.*"%>
+<%@page import="java.lang.*"%>
+<%@page import="java.util.Date"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -94,27 +97,18 @@
                     String tipo = request.getParameter("tipo");
                     String añoPublicacionStr = request.getParameter("añoPublicacion");
                     
-                    // Debug - Imprimir los valores para verificar
-                    System.out.println("Tipo seleccionado: " + tipo);
-                    
-                    // Usar un año predeterminado si hay problemas con el valor recibido
-                    int añoPublicacion = 2000; // Valor predeterminado
+                    // Valor predeterminado para el año
+                    int añoPublicacion = 2000; 
                     
                     try {
                         if (añoPublicacionStr != null && !añoPublicacionStr.trim().isEmpty()) {
                             añoPublicacion = Integer.parseInt(añoPublicacionStr.trim());
-                            System.out.println("[CRÍTICO] Año de publicación convertido: " + añoPublicacion);
                         }
                     } catch (NumberFormatException e) {
-                        // Si hay error al convertir, simplemente usamos el valor predeterminado
-                        System.out.println("[CRÍTICO] Error al convertir año de publicación: " + e.getMessage());
-                        System.out.println("[CRÍTICO] Usando año predeterminado: " + añoPublicacion);
+                        // Si hay error al convertir, usamos el valor predeterminado
                     }
                     
-                    // Registrar el valor en la consola para depuración
-                    System.out.println("[CRÍTICO] VALOR FINAL DEL AÑO ANTES DE CREAR LIBRO: " + añoPublicacion);
-                    
-                    // Guardar el año para uso en los parámetros si necesitamos redireccionar
+                    // Guardar el año para uso en los parámetros
                     session.setAttribute("ultimoAñoPublicacion", añoPublicacion);
                     
                     // Obtener el gestor de libros
@@ -129,8 +123,6 @@
                         boolean esSerie = "true".equals(request.getParameter("esSerie"));
                         
                         nuevoLibro = new LibroFiccion(isbn, titulo, autor, añoPublicacion, genero, esSerie);
-                        System.out.println("[CRÍTICO] Libro ficción creado con año: " + añoPublicacion);
-                        System.out.println("[CRÍTICO] Verificando: " + nuevoLibro.getAñoPublicacion());
                     } 
                     else if ("NoFiccion".equals(tipo)) {
                         String tema = request.getParameter("tema");
@@ -148,26 +140,18 @@
                         String actualizaciones = request.getParameter("actualizaciones");
                         if (actualizaciones == null) actualizaciones = "";
                         
-                        // Imprimir valores para depuración
-                        System.out.println("Creando libro de referencia con año: " + añoPublicacion);
                         nuevoLibro = new LibroReferencia(isbn, titulo, autor, añoPublicacion, tipoReferencia, actualizaciones);
-                        System.out.println("Libro referencia creado, verificando año: " + nuevoLibro.getAñoPublicacion());
                     } else {
                         errorMsg = "No se pudo crear el libro. Tipo no reconocido: " + tipo;
-                        System.out.println(errorMsg);
                     }
                     
                     // Agregar el libro si se creó correctamente
                     if (nuevoLibro != null) {
-                        System.out.println("[CRÍTICO] VERIFICACIÓN ANTES DE AGREGAR - Libro: " + 
-                                           nuevoLibro.getTitulo() + ", Año: " + nuevoLibro.getAñoPublicacion());
-                        
                         // Establecer el año explícitamente de nuevo antes de agregar (por si acaso)
                         nuevoLibro.setAñoPublicacion(añoPublicacion);
                         
                         manager.agregarLibro(nuevoLibro);
                         
-                        System.out.println("[CRÍTICO] VERIFICACIÓN DESPUÉS DE AGREGAR:");
                         manager.verificarEstadoContenedor();
                         
                         response.sendRedirect("list.jsp?action=add&añoPublicacion=" + añoPublicacion + "&isbn=" + isbn);
