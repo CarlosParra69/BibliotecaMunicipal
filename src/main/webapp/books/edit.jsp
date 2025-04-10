@@ -1,5 +1,8 @@
 <%@page import="sena.adso.sistema_gestion_libros.model.Loan"%>
 <%@page import="sena.adso.sistema_gestion_libros.model.*"%>
+<%@page import="java.io.*"%>
+<%@page import="java.lang.*"%>
+<%@page import="java.util.Date"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -65,10 +68,8 @@
                 try {
                     if (añoPublicacionStr != null && !añoPublicacionStr.trim().isEmpty()) {
                         añoPublicacion = Integer.parseInt(añoPublicacionStr.trim());
-                        System.out.println("En edit.jsp - Año de publicación convertido: " + añoPublicacion);
                     }
                 } catch (NumberFormatException e) {
-                    System.out.println("Error al convertir año en edit.jsp: " + e.getMessage());
                     // Mantenemos el valor actual en caso de error
                 }
                 
@@ -76,9 +77,6 @@
                 libro.setTitulo(nuevaTitulo);
                 libro.setAutor(nuevoAutor);
                 libro.setAñoPublicacion(añoPublicacion);
-                
-                System.out.println("Actualizando libro - Año establecido a: " + añoPublicacion);
-                System.out.println("Verificando libro después de actualizar propiedades: " + libro.getAñoPublicacion());
                 
                 // Si el libro no está prestado actualmente, actualizar disponibilidad
                 if (!libro.isDisponible() && disponible) {
@@ -390,4 +388,4 @@
         <p>&copy; 2025 Sistema de Biblioteca</p>
     </footer>
 </body>
-</html>
+</html> 
