@@ -17,6 +17,32 @@ function setTheme(theme) {
     
     localStorage.setItem('theme', theme);
     updateThemeIcon(theme);
+    
+    // Configurar SweetAlert2 para el tema actual
+    updateSweetAlert2Theme(theme);
+}
+
+// Función para configurar SweetAlert2 según el tema actual
+function updateSweetAlert2Theme(theme) {
+    if (typeof Swal !== 'undefined') {
+        if (theme === 'dark') {
+            // Configuración para tema oscuro
+            Swal.mixin({
+                background: '#333',
+                color: '#fff',
+                confirmButtonColor: '#0d6efd',
+                cancelButtonColor: '#6c757d'
+            });
+        } else {
+            // Configuración para tema claro (valores por defecto)
+            Swal.mixin({
+                background: '#fff',
+                color: '#545454',
+                confirmButtonColor: '#0d6efd',
+                cancelButtonColor: '#6c757d'
+            });
+        }
+    }
 }
 
 // Función para actualizar el icono según el tema
@@ -86,6 +112,11 @@ document.addEventListener('DOMContentLoaded', () => {
     addThemeSelector();
     initTheme();
     
+    // Aplicar tema a SweetAlert2 una vez que la página esté cargada
+    if (typeof Swal !== 'undefined') {
+        updateSweetAlert2Theme(savedTheme);
+    }
+    
     // Observar cambios al tema en caso de que otra parte de la aplicación lo modifique
     const observer = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
@@ -98,6 +129,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (themeSelect && theme) {
                     themeSelect.value = theme;
                 }
+                
+                // Actualizar tema de SweetAlert2
+                updateSweetAlert2Theme(theme);
             }
         });
     });

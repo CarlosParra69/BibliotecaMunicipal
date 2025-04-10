@@ -1,3 +1,4 @@
+<%@page import="java.util.ArrayList"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="sena.adso.sistema_gestion_libros.model.LibroManager"%>
 <%@page import="sena.adso.sistema_gestion_libros.model.Loan"%>
@@ -6,6 +7,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Eliminar Préstamo - Sistema de Biblioteca</title>
     <link rel="icon" href="../img/book-closed-svgrepo-com.svg" type="image/svg+xml">
     <link rel="stylesheet" href="../css/styles.css">
@@ -13,6 +15,8 @@
     <%@ include file="/includes/theme-script.jsp" %>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../js/sweetalert-utils.js"></script>
 </head>
 <body>
     <script src="https://cdn.botpress.cloud/webchat/v2.3/inject.js"></script>
@@ -65,13 +69,35 @@
                     
                     // Verificar si se envió el formulario (confirmación)
                     if (request.getMethod().equals("POST")) {
+                        // Implementación directa de la eliminación del préstamo
+                        boolean eliminado = false;
+                        
                         // Si el préstamo está activo, devolverlo primero
                         if (prestamo.isActivo()) {
                             manager.devolverLibro(loanId);
                         }
                         
-                        // Redirigir a la página de lista con mensaje de éxito
-                        response.sendRedirect("list.jsp?action=delete");
+                        // Eliminar el préstamo manualmente de la lista
+                        ArrayList<Loan> prestamos = manager.getTodosLosPrestamos();
+                        for (int i = 0; i < prestamos.size(); i++) {
+                            if (prestamos.get(i).getId() == loanId) {
+                                prestamos.remove(i);
+                                eliminado = true;
+                                break;
+                            }
+                        }
+                        
+                        if (eliminado) {
+                            // Préstamo eliminado exitosamente, redirigir a la página de lista
+                            response.sendRedirect("list.jsp?action=delete");
+                        } else {
+                            // Error al eliminar el préstamo
+                            %>
+                            <div class="alert alert-danger mb-4">
+                                <p>Error al eliminar el préstamo. Por favor, inténtelo de nuevo.</p>
+                            </div>
+                            <%
+                        }
                         return;
                     }
                 %>
@@ -114,11 +140,11 @@
                             <% } %>
                         </div>
 
-                        <form action="delete-loan.jsp" method="post" class="mt-4">
+                        <form action="delete.jsp" method="post" class="mt-4">
                             <input type="hidden" name="id" value="<%= prestamo.getId() %>">
                             
                             <div class="text-center">
-                                <button type="submit" class="btn btn-danger" onclick="return confirm('¿Está seguro de eliminar este préstamo? Esta acción no se puede deshacer.');">Confirmar Eliminación</button>
+                                <button type="submit" class="btn btn-danger">Confirmar Eliminación</button>
                                 <a href="list.jsp" class="btn btn-secondary">Cancelar</a>
                             </div>
                         </form>

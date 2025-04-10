@@ -6,7 +6,7 @@ public class LibroNoFiccion extends Libro {
     private String nivelAcademico; // básico, medio, superior
 
     public LibroNoFiccion(String isbn, String titulo, String autor, int añoPublicacion, String tema, String nivelAcademico) {
-        super(isbn, titulo, autor, "No ficción", añoPublicacion);
+        super(isbn, titulo, autor, "noficcion", añoPublicacion);
         this.tema = tema;
         this.nivelAcademico = nivelAcademico;
     }

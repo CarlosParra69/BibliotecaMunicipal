@@ -11,6 +11,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Detalles del Préstamo - Sistema de Biblioteca</title>
     <link rel="icon" href="../img/book-closed-svgrepo-com.svg" type="image/svg+xml">
     <link rel="stylesheet" href="../css/styles.css">
@@ -18,6 +19,8 @@
     <%@ include file="/includes/theme-script.jsp" %>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../js/sweetalert-utils.js"></script>
 </head>
 <body>
     <script src="https://cdn.botpress.cloud/webchat/v2.3/inject.js"></script>
@@ -111,6 +114,13 @@
                                 <p><strong>Fecha de Préstamo:</strong> <%= fechaPrestamo %></p>
                                 <p><strong>Fecha Límite:</strong> <%= fechaLimite %></p>
                                 <p><strong>Fecha de Devolución:</strong> <%= fechaDevolucion %></p>
+                                
+                                <% if (!prestamo.isActivo()) { %>
+                                    <p>
+                                        <strong>Estado del libro al devolverlo:</strong> 
+                                        <span class="badge bg-success">Bueno</span>
+                                    </p>
+                                <% } %>
                             </div>
                             <div class="col-md-6">
                                 <h4>Información del Prestatario</h4>
@@ -118,6 +128,17 @@
                                 <p><strong>ID:</strong> <%= prestamo.getIdPrestatario() %></p>
                             </div>
                         </div>
+                        
+                        <% if (!prestamo.isActivo()) { %>
+                            <div class="card mb-4">
+                                <div class="card-header bg-info text-white">
+                                    <h4 class="mb-0">Observaciones al devolver</h4>
+                                </div>
+                                <div class="card-body">
+                                    <p>Sin observaciones</p>
+                                </div>
+                            </div>
+                        <% } %>
                         
                         <div class="card mb-4">
                             <div class="card-header bg-light">

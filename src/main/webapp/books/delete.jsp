@@ -12,6 +12,8 @@
     <%@ include file="/includes/theme-script.jsp" %>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../js/sweetalert-utils.js"></script>
 </head>
 <body>
     <script src="https://cdn.botpress.cloud/webchat/v2.3/inject.js"></script>
@@ -62,7 +64,7 @@
                         
                         if (eliminado) {
                             // Libro eliminado exitosamente, redirigir a la página de lista
-                            response.sendRedirect("list.jsp");
+                            response.sendRedirect("list.jsp?action=delete");
                         } else {
                             // El libro no se pudo eliminar (probablemente porque está en préstamo)
                 %>
@@ -107,7 +109,7 @@
                             <strong>Descripción:</strong> <%= libro.getDescripcion() %>
                         </div>
                         
-                        <form action="delete-book.jsp" method="post" class="mt-4">
+                        <form action="delete.jsp" method="post" class="mt-4">
                             <input type="hidden" name="isbn" value="<%= libro.getIsbn() %>">
                             
                             <div class="text-center">
@@ -120,7 +122,7 @@
             </div>
 
             <div class="col-md-6 text-center">
-                <img src="../img/delete-book.png" alt="Eliminar libro" class="img-fluid rounded" style="max-height: 350px;">
+                <img src="../img/book.png" alt="Eliminar libro" class="img-fluid rounded" style="max-height: 350px;">
                 <div class="mt-3">
                     <div class="alert alert-info">
                         <p><strong>Nota:</strong> La eliminación de un libro es permanente y no se puede deshacer.</p>

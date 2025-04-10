@@ -1,3 +1,4 @@
+<%@page import="sena.adso.sistema_gestion_libros.model.Loan"%>
 <%@page import="sena.adso.sistema_gestion_libros.model.LibroReferencia"%>
 <%@page import="sena.adso.sistema_gestion_libros.model.LibroNoFiccion"%>
 <%@page import="sena.adso.sistema_gestion_libros.model.LibroFiccion"%>
@@ -18,17 +19,19 @@
         <%-- Incluir scripts y estilos para tema --%>
         <%@ include file="/includes/theme-script.jsp" %>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="../js/sweetalert-utils.js"></script>
         <script>
             function showAlert(action) {
                 switch (action) {
                     case 'add':
-                        alert('Libro agregado exitosamente.');
+                        showSuccessAlert('¡Éxito!', 'Libro agregado exitosamente', '#28a745');
                         break;
                     case 'edit':
-                        alert('Libro actualizado exitosamente.');
+                        showSuccessAlert('¡Éxito!', 'Libro actualizado exitosamente', '#ffc107');
                         break;
                     case 'delete':
-                        alert('Libro eliminado exitosamente.');
+                        showSuccessAlert('¡Éxito!', 'Libro eliminado exitosamente', '#dc3545');
                         break;
                     default:
                         break;
@@ -118,7 +121,22 @@
                                                         <% if (libro.isDisponible()) { %>
                                                             <span class="badge bg-success">Disponible</span>
                                                         <% } else { %>
-                                                            <span class="badge bg-warning">Prestado</span>
+                                                            <% 
+                                                                // Verificar si el libro está en préstamo o simplemente no disponible
+                                                                boolean estaEnPrestamo = false;
+                                                                for (Loan prestamo : manager.getPrestamosActivos()) {
+                                                                    if (prestamo.getLibro().getIsbn().equals(libro.getIsbn())) {
+                                                                        estaEnPrestamo = true;
+                                                                        break;
+                                                                    }
+                                                                }
+                                                                
+                                                                if (estaEnPrestamo) {
+                                                            %>
+                                                                <span class="badge bg-warning">Prestado</span>
+                                                            <% } else { %>
+                                                                <span class="badge bg-danger">No Disponible</span>
+                                                            <% } %>
                                                         <% } %>
                                                     </td>
                                                 </tr>
@@ -132,7 +150,7 @@
                             </div>
                         </div>
                         <div class="mt-3">
-                            <a href="add-book.jsp" class="btn btn-success">Agregar Nuevo Libro</a>
+                            <a href="add.jsp" class="btn btn-success">Agregar Nuevo Libro</a>
                         </div>
                         <br>
                     </div>
@@ -160,13 +178,13 @@
                     <table class="table table-striped table-hover">
                         <thead class="table-dark">
                             <tr>
-                                <th>ISBN</th>
-                                <th>Título</th>
-                                <th>Autor</th>
-                                <th>Tipo</th>
-                                <th>Año</th>
-                                <th>Estado</th>
-                                <th>Acciones</th>
+                                <th >ISBN</th>
+                                <th >Título</th>
+                                <th >Autor</th>
+                                <th >Tipo</th>
+                                <th >Año</th>
+                                <th >Estado</th>
+                                <th class="text-center">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -181,16 +199,32 @@
                                         <% if (libro.isDisponible()) { %>
                                             <span class="badge bg-success">Disponible</span>
                                         <% } else { %>
-                                            <span class="badge bg-warning">Prestado</span>
+                                            <% 
+                                                // Verificar si el libro está en préstamo o simplemente no disponible
+                                                boolean estaEnPrestamo = false;
+                                                for (Loan prestamo : manager.getPrestamosActivos()) {
+                                                    if (prestamo.getLibro().getIsbn().equals(libro.getIsbn())) {
+                                                        estaEnPrestamo = true;
+                                                        break;
+                                                    }
+                                                }
+                                                
+                                                if (estaEnPrestamo) {
+                                            %>
+                                                <span class="badge bg-warning">Prestado</span>
+                                            <% } else { %>
+                                                <span class="badge bg-danger">No Disponible</span>
+                                            <% } %>
                                         <% } %>
                                     </td>
                                     <td>
-                                        <div class="btn-group" role="group">
-                                            <a href="edit-book.jsp?isbn=<%= libro.getIsbn() %>" class="btn btn-warning btn-sm">Editar</a>
-                                            <a href="delete-book.jsp?isbn=<%= libro.getIsbn() %>" class="btn btn-danger btn-sm">Eliminar</a>
+                                        <div class="text-center" role="group">
                                             <% if (libro.isDisponible()) { %>
-                                                <a href="../loans/add-loan.jsp?isbn=<%= libro.getIsbn() %>" class="btn btn-primary btn-sm">Prestar</a>
+                                                <a href="../loans/add.jsp?isbn=<%= libro.getIsbn() %>" class="btn btn-primary btn-sm">Prestar</a>
                                             <% } %>
+                                            <a href="edit.jsp?isbn=<%= libro.getIsbn() %>" class="btn btn-warning btn-sm">Editar</a>
+                                            <a href="delete.jsp?isbn=<%= libro.getIsbn() %>" class="btn btn-danger btn-sm">Eliminar</a>
+                                           
                                         </div>
                                     </td>
                                 </tr>

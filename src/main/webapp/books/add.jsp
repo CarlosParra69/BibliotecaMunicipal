@@ -1,8 +1,4 @@
-<%@page import="sena.adso.sistema_gestion_libros.model.LibroReferencia"%>
-<%@page import="sena.adso.sistema_gestion_libros.model.LibroNoFiccion"%>
-<%@page import="sena.adso.sistema_gestion_libros.model.LibroFiccion"%>
-<%@page import="sena.adso.sistema_gestion_libros.model.Libro"%>
-<%@page import="sena.adso.sistema_gestion_libros.model.LibroManager"%>
+<%@page import="sena.adso.sistema_gestion_libros.model.*"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -15,6 +11,8 @@
     <%@ include file="/includes/theme-script.jsp" %>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../js/sweetalert-utils.js"></script>
     <script>
         function showTypeFields() {
             document.getElementById('ficcionFields').style.display = 'none';
@@ -22,35 +20,40 @@
             document.getElementById('referenciaFields').style.display = 'none';
             
             var tipo = document.getElementById('tipo').value;
-            if (tipo === 'Ficción') {
+            if (tipo === 'ficcion') {
                 document.getElementById('ficcionFields').style.display = 'block';
-            } else if (tipo === 'No ficción') {
+            } else if (tipo === 'noficcion') {
                 document.getElementById('noFiccionFields').style.display = 'block';
-            } else if (tipo === 'Referencia') {
+            } else if (tipo === 'referencia') {
                 document.getElementById('referenciaFields').style.display = 'block';
             }
         }
         
         function validateForm() {
             var isbn = document.getElementById('isbn').value;
-            var añoPublicacion = document.getElementById('añoPublicacion').value;
+            var titulo = document.getElementById('titulo').value;
+            var autor = document.getElementById('autor').value;
+            var tipo = document.getElementById('tipo').value;
             
-            // Validar ISBN (formato básico)
-            if (!/^\d{10}(\d{3})?$/.test(isbn)) {
-                alert('El ISBN debe tener 10 o 13 dígitos numéricos.');
+            // Solo verificar que título, autor y tipo estén completos
+            if (!isbn || !titulo || !autor || !tipo) {
+                showErrorAlert('Campos incompletos', 'Por favor complete los campos obligatorios: ISBN, Título, Autor y Tipo.');
                 return false;
             }
             
-            // Validar año de publicación
-            var año = parseInt(añoPublicacion);
-            var añoActual = new Date().getFullYear();
-            if (año < 1000 || año > añoActual) {
-                alert('El año de publicación debe ser válido (entre 1000 y ' + añoActual + ').');
+            // Validación básica del ISBN - solo verificar que tenga algún valor
+            if (isbn.trim() === '') {
+                showErrorAlert('ISBN requerido', 'Por favor ingrese un ISBN.');
                 return false;
             }
             
             return true;
         }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            showTypeFields();
+            document.getElementById('tipo').addEventListener('change', showTypeFields);
+        });
     </script>
 </head>
 <body>
@@ -64,42 +67,84 @@
     <nav class="text-center">
         <ul class="mb-4">
             <li><a href="../index.jsp">Inicio</a></li>
-            <li><a href="../books/list.jsp">Libros</a></li>
+            <li><a href="list.jsp">Libros</a></li>
             <li><a href="../loans/list.jsp">Préstamos</a></li>
         </ul>
     </nav>
 
     <div class="container">
         <%
-            if (request.getMethod().equals("POST")) {
-                LibroManager manager = LibroManager.getInstance();
-                
-                String isbn = request.getParameter("isbn");
-                String titulo = request.getParameter("titulo");
-                String autor = request.getParameter("autor");
-                String tipo = request.getParameter("tipo");
-                int añoPublicacion = Integer.parseInt(request.getParameter("añoPublicacion"));
-                
-                Libro nuevoLibro = null;
-                
-                if (tipo.equals("Ficción")) {
-                    String genero = request.getParameter("genero");
-                    boolean esSerie = request.getParameter("esSerie") != null;
-                    nuevoLibro = new LibroFiccion(isbn, titulo, autor, "Bueno", genero, esSerie, añoPublicacion);
-                } else if (tipo.equals("No ficción")) {
-                    String tema = request.getParameter("tema");
-                    String nivelAcademico = request.getParameter("nivelAcademico");
-                    nuevoLibro = new LibroNoFiccion(isbn, titulo, autor, añoPublicacion, tema, nivelAcademico);
-                } else if (tipo.equals("Referencia")) {
-                    String tipoReferencia = request.getParameter("tipoReferencia");
-                    String actualizaciones = request.getParameter("actualizaciones");
-                    nuevoLibro = new LibroReferencia(isbn, titulo, autor, añoPublicacion, tipoReferencia, actualizaciones);
-                }
-                
-                if (nuevoLibro != null) {
-                    manager.agregarLibro(nuevoLibro);
-                    response.sendRedirect("list.jsp");
-                    return;
+            String errorMsg = null;
+            
+            // Procesamiento del formulario
+            if ("POST".equalsIgnoreCase(request.getMethod())) {
+                try {
+                    String isbn = request.getParameter("isbn");
+                    String titulo = request.getParameter("titulo");
+                    String autor = request.getParameter("autor");
+                    String tipo = request.getParameter("tipo");
+                    String añoPublicacionStr = request.getParameter("añoPublicacion");
+                    
+                    // Debug - Imprimir los valores para verificar
+                    System.out.println("Tipo seleccionado: " + tipo);
+                    
+                    // Usar un año predeterminado si hay problemas con el valor recibido
+                    int añoPublicacion = 2000; // Valor predeterminado
+                    
+                    try {
+                        if (añoPublicacionStr != null && !añoPublicacionStr.trim().isEmpty()) {
+                            añoPublicacion = Integer.parseInt(añoPublicacionStr.trim());
+                        }
+                    } catch (NumberFormatException e) {
+                        // Si hay error al convertir, simplemente usamos el valor predeterminado
+                        System.out.println("Usando año predeterminado: " + añoPublicacion);
+                    }
+                    
+                    // Obtener el gestor de libros
+                    LibroManager manager = LibroManager.getInstance();
+                    
+                    // Crear el libro según el tipo
+                    Libro nuevoLibro = null;
+                    
+                    if ("ficcion".equals(tipo)) {
+                        String genero = request.getParameter("genero");
+                        if (genero == null || genero.trim().isEmpty()) genero = "Fantasía"; // Valor predeterminado
+                        boolean esSerie = "true".equals(request.getParameter("esSerie"));
+                        
+                        nuevoLibro = new LibroFiccion(isbn, titulo, autor, añoPublicacion, genero, esSerie);
+                    } 
+                    else if ("noficcion".equals(tipo)) {
+                        String tema = request.getParameter("tema");
+                        if (tema == null || tema.trim().isEmpty()) tema = "Ciencia"; // Valor predeterminado
+                        
+                        String nivelAcademico = request.getParameter("nivelAcademico");
+                        if (nivelAcademico == null || nivelAcademico.trim().isEmpty()) nivelAcademico = "Básico"; // Valor predeterminado
+                        
+                        nuevoLibro = new LibroNoFiccion(isbn, titulo, autor, añoPublicacion, tema, nivelAcademico);
+                    } 
+                    else if ("referencia".equals(tipo)) {
+                        String tipoReferencia = request.getParameter("tipoReferencia");
+                        if (tipoReferencia == null || tipoReferencia.trim().isEmpty()) tipoReferencia = "Enciclopedia"; // Valor predeterminado
+                        
+                        String actualizaciones = request.getParameter("actualizaciones");
+                        if (actualizaciones == null) actualizaciones = "";
+                        
+                        nuevoLibro = new LibroReferencia(isbn, titulo, autor, añoPublicacion, tipoReferencia, actualizaciones);
+                    } else {
+                        errorMsg = "No se pudo crear el libro. Tipo no reconocido: " + tipo;
+                        System.out.println(errorMsg);
+                    }
+                    
+                    // Agregar el libro si se creó correctamente
+                    if (nuevoLibro != null) {
+                        manager.agregarLibro(nuevoLibro);
+                        response.sendRedirect("list.jsp?action=add");
+                        return;
+                    }
+                    
+                } catch (Exception e) {
+                    errorMsg = "Error: " + e.getMessage();
+                    e.printStackTrace();
                 }
             }
         %>
@@ -111,10 +156,16 @@
                         <h3 class="mb-0">Nuevo Libro</h3>
                     </div>
                     <div class="card-body">
-                        <form action="add-book.jsp" method="post" onsubmit="return validateForm();">
+                        <% if (errorMsg != null) { %>
+                            <div class="alert alert-danger mb-3">
+                                <%= errorMsg %>
+                            </div>
+                        <% } %>
+                        <form id="libroForm" action="add.jsp" method="post" onsubmit="return validateForm();" accept-charset="UTF-8">
                             <div class="mb-3">
                                 <label for="isbn" class="form-label">ISBN:</label>
                                 <input type="text" class="form-control" id="isbn" name="isbn" required>
+                                <small class="text-muted">Ingrese cualquier número identificador para el libro</small>
                             </div>
 
                             <div class="mb-3">
@@ -129,21 +180,23 @@
 
                             <div class="mb-3">
                                 <label for="tipo" class="form-label">Tipo de libro:</label>
-                                <select class="form-control" id="tipo" name="tipo" onchange="showTypeFields()" required>
+                                <select class="form-control" id="tipo" name="tipo" required>
                                     <option value="">Seleccione un tipo</option>
-                                    <option value="Ficción">Ficción</option>
-                                    <option value="No ficción">No ficción</option>
-                                    <option value="Referencia">Referencia</option>
+                                    <option value="ficcion">Ficción</option>
+                                    <option value="noficcion">No ficción</option>
+                                    <option value="referencia">Referencia</option>
                                 </select>
                             </div>
                             
                             <div class="mb-3">
                                 <label for="añoPublicacion" class="form-label">Año de publicación:</label>
-                                <input type="number" class="form-control" id="añoPublicacion" name="añoPublicacion" required>
+                                <input type="text" class="form-control" id="añoPublicacion" name="añoPublicacion" value="2000">
+                                <small class="text-muted">Si deja este campo vacío, se usará el año 2000 por defecto</small>
                             </div>
                             
                             <!-- Campos específicos para Ficción -->
                             <div id="ficcionFields" style="display: none;">
+                                <h5 class="mt-3 mb-3">Información específica para Ficción</h5>
                                 <div class="mb-3">
                                     <label for="genero" class="form-label">Género:</label>
                                     <select class="form-control" id="genero" name="genero">
@@ -164,6 +217,7 @@
                             
                             <!-- Campos específicos para No Ficción -->
                             <div id="noFiccionFields" style="display: none;">
+                                <h5 class="mt-3 mb-3">Información específica para No Ficción</h5>
                                 <div class="mb-3">
                                     <label for="tema" class="form-label">Tema:</label>
                                     <select class="form-control" id="tema" name="tema">
@@ -189,6 +243,7 @@
                             
                             <!-- Campos específicos para Referencia -->
                             <div id="referenciaFields" style="display: none;">
+                                <h5 class="mt-3 mb-3">Información específica para Referencia</h5>
                                 <div class="mb-3">
                                     <label for="tipoReferencia" class="form-label">Tipo de referencia:</label>
                                     <select class="form-control" id="tipoReferencia" name="tipoReferencia">

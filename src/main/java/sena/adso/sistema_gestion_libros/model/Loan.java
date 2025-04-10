@@ -11,6 +11,8 @@ public class Loan {
     private Date fechaPrestamo;
     private Date fechaLimite;
     private Date fechaDevolucion;
+    private String estadoDevolucion;
+    private String observaciones;
 
     public Loan(int id, Libro libro, String nombrePrestatario, String idPrestatario, Date fechaPrestamo, Date fechaLimite) {
         this.id = id;
@@ -20,6 +22,8 @@ public class Loan {
         this.fechaPrestamo = fechaPrestamo;
         this.fechaLimite = fechaLimite;
         this.fechaDevolucion = null;
+        this.estadoDevolucion = null;
+        this.observaciones = "";
 
         libro.setDisponible(false);
     }
@@ -80,9 +84,35 @@ public class Loan {
         this.fechaDevolucion = fechaDevolucion;
     }
 
-    public void returnLibro(Date fechaDevolucion) {
+    public String getEstadoDevolucion() {
+        return estadoDevolucion;
+    }
+
+    public void setEstadoDevolucion(String estadoDevolucion) {
+        this.estadoDevolucion = estadoDevolucion;
+    }
+
+    public String getObservaciones() {
+        return observaciones;
+    }
+
+    public void setObservaciones(String observaciones) {
+        this.observaciones = observaciones;
+    }
+
+    public void returnLibro(Date fechaDevolucion, String estadoDevolucion, String observaciones) {
         this.fechaDevolucion = fechaDevolucion;
+        this.estadoDevolucion = estadoDevolucion;
+        this.observaciones = observaciones;
         this.libro.setDisponible(true);
+        
+        if ("perdido".equalsIgnoreCase(estadoDevolucion)) {
+            this.libro.setDisponible(false);
+        }
+    }
+
+    public void returnLibro(Date fechaDevolucion) {
+        returnLibro(fechaDevolucion, "bueno", "");
     }
 
     public boolean isActivo() {

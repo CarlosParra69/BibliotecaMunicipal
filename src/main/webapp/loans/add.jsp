@@ -1,3 +1,4 @@
+<%@page import="java.util.Calendar"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="java.util.Date"%>
 <%@page import="java.util.ArrayList"%>
@@ -9,6 +10,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Agregar Préstamo - Sistema de Biblioteca</title>
     <link rel="icon" href="../img/book-closed-svgrepo-com.svg" type="image/svg+xml">
     <link rel="stylesheet" href="../css/styles.css">
@@ -16,13 +18,15 @@
     <%@ include file="/includes/theme-script.jsp" %>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../js/sweetalert-utils.js"></script>
     <script>
         function validateForm() {
             var returnDate = new Date(document.getElementById('returnDate').value);
             var loanDate = new Date(document.getElementById('loanDate').value);
             
             if (returnDate < loanDate) {
-                alert('La fecha de devolución debe ser posterior a la fecha de préstamo.');
+                showErrorAlert('Error en fechas', 'La fecha de devolución debe ser posterior a la fecha de préstamo.');
                 return false;
             }
             
@@ -31,7 +35,7 @@
             today.setHours(0, 0, 0, 0); // Resetear la hora para comparar solo fechas
             
             if (loanDate < today) {
-                alert('La fecha de préstamo no puede ser anterior a hoy.');
+                showErrorAlert('Error en fechas', 'La fecha de préstamo no puede ser anterior a hoy.');
                 return false;
             }
             
@@ -62,34 +66,42 @@
             
             // Verificar si se envió el formulario
             if (request.getMethod().equals("POST")) {
-                // Obtener datos del formulario
-                String isbn = request.getParameter("isbn");
-                String nombrePrestatario = request.getParameter("nombrePrestatario");
-                String idPrestatario = request.getParameter("idPrestatario");
-                
-                // Calcular días de préstamo
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                Date fechaPrestamo = sdf.parse(request.getParameter("loanDate"));
-                Date fechaDevolucion = sdf.parse(request.getParameter("returnDate"));
-                
-                long diferencia = fechaDevolucion.getTime() - fechaPrestamo.getTime();
-                int diasPrestamo = (int) (diferencia / (1000 * 60 * 60 * 24));
-                
-                // Crear el préstamo
-                Loan prestamo = manager.crearPrestamo(isbn, nombrePrestatario, idPrestatario, diasPrestamo);
-                
-                if (prestamo != null) {
-                    // Préstamo creado exitosamente, redirigir a la página de lista
-                    response.sendRedirect("list.jsp?action=add");
-                } else {
-                    // Error al crear el préstamo (libro no disponible)
+                try {
+                    // Obtener datos del formulario
+                    String isbn = request.getParameter("isbn");
+                    String nombrePrestatario = request.getParameter("nombrePrestatario");
+                    String idPrestatario = request.getParameter("idPrestatario");
+                    
+                    // Calcular días de préstamo
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    Date fechaPrestamo = sdf.parse(request.getParameter("loanDate"));
+                    Date fechaDevolucion = sdf.parse(request.getParameter("returnDate"));
+                    
+                    long diferencia = fechaDevolucion.getTime() - fechaPrestamo.getTime();
+                    int diasPrestamo = (int) (diferencia / (1000 * 60 * 60 * 24));
+                    
+                    // Crear el préstamo
+                    Loan prestamo = manager.crearPrestamo(isbn, nombrePrestatario, idPrestatario, diasPrestamo);
+                    
+                    if (prestamo != null) {
+                        // Préstamo creado exitosamente, redirigir a la página de lista
+                        response.sendRedirect("list.jsp?action=add");
+                        return;
+                    } else {
+                        // Error al crear el préstamo (libro no disponible)
         %>
                     <div class="alert alert-danger mb-4">
                         <p>No se pudo crear el préstamo. El libro no está disponible o no existe.</p>
                     </div>
         <%
+                    }
+                } catch (Exception e) {
+        %>
+                    <div class="alert alert-danger mb-4">
+                        <p>Error al procesar el préstamo: <%= e.getMessage() %></p>
+                    </div>
+        <%
                 }
-                return;
             }
             
             // Obtener libros disponibles
@@ -98,7 +110,7 @@
             // Verificar si hay libros disponibles
             if (librosDisponibles.isEmpty()) {
         %>
-                <div class="alert alert-danger mb-4">
+                <div class="alert alert-warning mb-4">
                     <p>No hay libros disponibles para préstamo en este momento.</p>
                 </div>
                 <div class="text-center mb-4">
@@ -130,10 +142,10 @@
                                 <h3 class="mb-0">Nuevo Préstamo</h3>
                             </div>
                             <div class="card-body">
-                                <form action="add-loan.jsp" method="post" onsubmit="return validateForm();">
+                                <form action="add.jsp" method="post" onsubmit="return validateForm();">
                                     <div class="mb-3">
                                         <label for="isbn" class="form-label">Libro:</label>
-                                        <select class="form-control" id="isbn" name="isbn" required>
+                                        <select class="form-select" id="isbn" name="isbn" required>
                                             <option value="">Seleccione un libro</option>
                                             <% for (Libro libro : librosDisponibles) { %>
                                                 <option value="<%= libro.getIsbn() %>" <%= libro.getIsbn().equals(selectedIsbn) ? "selected" : "" %>>

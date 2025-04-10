@@ -119,4 +119,30 @@ public class LibroManager {
         prestamo.returnLibro(new Date());
         return true;
     }
+
+    public boolean devolverLibro(int idPrestamo, String estadoDevolucion, String observaciones) {
+        Loan prestamo = getPrestamoPorId(idPrestamo);
+
+        if (prestamo == null || !prestamo.isActivo()) {
+            return false;
+        }
+
+        prestamo.returnLibro(new Date(), estadoDevolucion, observaciones);
+        return true;
+    }
+
+    public boolean eliminarPrestamo(int idPrestamo) {
+        for (int i = 0; i < prestamos.size(); i++) {
+            if (prestamos.get(i).getId() == idPrestamo) {
+                // Si el préstamo está activo, devolver el libro primero
+                if (prestamos.get(i).isActivo()) {
+                    devolverLibro(idPrestamo);
+                }
+                // Eliminar el préstamo
+                prestamos.remove(i);
+                return true;
+            }
+        }
+        return false;
+    }
 }

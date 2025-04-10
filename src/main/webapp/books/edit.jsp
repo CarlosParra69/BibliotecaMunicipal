@@ -1,8 +1,5 @@
-<%@page import="sena.adso.sistema_gestion_libros.model.LibroReferencia"%>
-<%@page import="sena.adso.sistema_gestion_libros.model.LibroNoFiccion"%>
-<%@page import="sena.adso.sistema_gestion_libros.model.LibroFiccion"%>
-<%@page import="sena.adso.sistema_gestion_libros.model.Libro"%>
-<%@page import="sena.adso.sistema_gestion_libros.model.LibroManager"%>
+<%@page import="sena.adso.sistema_gestion_libros.model.Loan"%>
+<%@page import="sena.adso.sistema_gestion_libros.model.*"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -60,12 +57,47 @@
             if (request.getMethod().equals("POST")) {
                 String titulo = request.getParameter("titulo");
                 String autor = request.getParameter("autor");
-                int añoPublicacion = Integer.parseInt(request.getParameter("añoPublicacion"));
+                
+                // Validación para evitar error con año de publicación nulo
+                int añoPublicacion = 2000; // Valor predeterminado
+                String añoPublicacionStr = request.getParameter("añoPublicacion");
+                if (añoPublicacionStr != null && !añoPublicacionStr.trim().isEmpty()) {
+                    try {
+                        añoPublicacion = Integer.parseInt(añoPublicacionStr);
+                    } catch (NumberFormatException e) {
+                        // Si hay error al convertir, simplemente usamos el valor predeterminado
+                        System.out.println("Error al convertir año de publicación: " + e.getMessage());
+                    }
+                }
+                
+                // Obtener el valor de disponibilidad
+                boolean disponible = "true".equals(request.getParameter("disponible"));
                 
                 // Actualizar los campos comunes
                 libro.setTitulo(titulo);
                 libro.setAutor(autor);
                 libro.setAñoPublicacion(añoPublicacion);
+                
+                // Si el libro no está prestado actualmente, actualizar disponibilidad
+                if (!libro.isDisponible() && disponible) {
+                    // Si intentamos marcar como disponible un libro que no lo estaba
+                    // Verificar que no esté prestado actualmente
+                    boolean estaEnPrestamo = false;
+                    for (Loan prestamo : manager.getPrestamosActivos()) {
+                        if (prestamo.getLibro().getIsbn().equals(libro.getIsbn())) {
+                            estaEnPrestamo = true;
+                            break;
+                        }
+                    }
+                    
+                    if (!estaEnPrestamo) {
+                        libro.setDisponible(disponible);
+                    }
+                }
+                else if (libro.isDisponible() && !disponible) {
+                    // Si intentamos marcar como no disponible un libro disponible
+                    libro.setDisponible(false);
+                }
                 
                 // Actualizar campos específicos según el tipo de libro
                 if (libro instanceof LibroFiccion) {
@@ -96,7 +128,7 @@
                 
                 if (actualizado) {
                     // Libro actualizado exitosamente, redirigir a la página de lista
-                    response.sendRedirect("list.jsp");
+                    response.sendRedirect("list.jsp?action=edit");
                 } else {
                     // Error al actualizar el libro
         %>
@@ -140,7 +172,7 @@
                         <h3 class="mb-0">Editar Libro</h3>
                     </div>
                     <div class="card-body">
-                        <form action="edit-book.jsp" method="post" onsubmit="return validateForm();">
+                        <form action="edit.jsp" method="post" onsubmit="return validateForm();">
                             <input type="hidden" name="isbn" value="<%= libro.getIsbn() %>">
                             
                             <div class="mb-3">
@@ -167,7 +199,51 @@
                             
                             <div class="mb-3">
                                 <label for="añoPublicacion" class="form-label">Año de Publicación:</label>
+                                <input type="number" class="form-control" id="añoPublicacion" name="añoPublicacion" value="<%= libro.getAñoPublicacion() %>" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="disponible" class="form-label">Disponibilidad:</label>
                                 
+                                <%
+                                    // Determinar el estado actual del libro
+                                    String estadoActual = "";
+                                    String claseEstado = "";
+                                    if (libro.isDisponible()) {
+                                        estadoActual = "Disponible";
+                                        claseEstado = "text-success";
+                                    } else {
+                                        // Verificar si está prestado o no disponible
+                                        boolean estaEnPrestamo = false;
+                                        for (Loan prestamo : manager.getPrestamosActivos()) {
+                                            if (prestamo.getLibro().getIsbn().equals(libro.getIsbn())) {
+                                                estaEnPrestamo = true;
+                                                break;
+                                            }
+                                        }
+                                        
+                                        if (estaEnPrestamo) {
+                                            estadoActual = "Prestado";
+                                            claseEstado = "text-warning";
+                                        } else {
+                                            estadoActual = "No Disponible";
+                                            claseEstado = "text-danger";
+                                        }
+                                    }
+                                %>
+                                
+                                <p class="mb-2">Estado actual: <span class="<%= claseEstado %>"><strong><%= estadoActual %></strong></span></p>
+                                
+                                <select class="form-select" id="disponible" name="disponible">
+                                    <option value="true" <%= libro.isDisponible() ? "selected" : "" %>>Disponible</option>
+                                    <option value="false" <%= !libro.isDisponible() ? "selected" : "" %>>No Disponible</option>
+                                </select>
+                                <small class="text-muted">
+                                    Marque como "No Disponible" si el libro está perdido o dañado permanentemente.<br>
+                                    <% if (estadoActual.equals("Prestado")) { %>
+                                        <strong class="text-warning">Advertencia:</strong> Este libro está actualmente prestado. Cualquier cambio en la disponibilidad no tendrá efecto hasta que sea devuelto.
+                                    <% } %>
+                                </small>
                             </div>
                             
                             <% if (tipoLibro.equals("Ficción")) { %>
@@ -246,7 +322,7 @@
             </div>
             
             <div class="col-md-6 text-center">
-                <img src="../img/edit-book.png" alt="Editar libro" class="img-fluid rounded" style="max-height: 350px;">
+                <img src="../img/book.png" alt="Editar libro" class="img-fluid rounded" style="max-height: 350px;">
                 <div class="mt-3">
                     <div class="alert alert-info">
                         <p><strong>Nota:</strong> El ISBN y el tipo de libro no se pueden modificar.</p>
