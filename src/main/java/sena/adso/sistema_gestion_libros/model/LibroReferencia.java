@@ -1,11 +1,11 @@
 package sena.adso.sistema_gestion_libros.model;
 
-public class LibroReferencia extends Libro{
-    private String tipoReferencia;
-    private String actualizaciones;
+public class LibroReferencia extends Libro {
+    private String tipoReferencia; // enciclopedia, diccionario, manual, etc.
+    private String actualizaciones; // última edición, revisiones, año, etc.
 
-    public LibroReferencia(int fechaPublicacion,String isbn, String titulo, String autor, String tipo, boolean disponible) {
-        super(isbn, titulo, autor, "referencia", fechaPublicacion, disponible);
+    public LibroReferencia(String isbn, String titulo, String autor, int añoPublicacion, String tipoReferencia, String actualizaciones) {
+        super(isbn, titulo, autor, "Referencia", añoPublicacion);
         this.tipoReferencia = tipoReferencia;
         this.actualizaciones = actualizaciones;
     }
@@ -25,16 +25,16 @@ public class LibroReferencia extends Libro{
     public void setActualizaciones(String actualizaciones) {
         this.actualizaciones = actualizaciones;
     }
-    
 
     @Override
-    public String getDescription() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public String getDescripcion() {
+        return getTitulo() + " es un libro de referencia del tipo " + tipoReferencia +
+               ". Últimas actualizaciones: " + actualizaciones + ".";
     }
 
     @Override
     public String toString() {
-        return "LibroReferencia{" + "tipoReferencia=" + tipoReferencia + ", actualizaciones=" + actualizaciones + '}';
+        return super.toString() + ", Tipo de referencia: " + tipoReferencia +
+               ", Actualizaciones: " + actualizaciones;
     }
-    
 }

@@ -1,12 +1,12 @@
 package sena.adso.sistema_gestion_libros.model;
 
-public class LibroNoFiccion extends Libro{
-    
-    private String tema; //ciencia, historia, otro
-    private String nivelAcademico; // basico, medio, superior
+public class LibroNoFiccion extends Libro {
 
-    public LibroNoFiccion(int fechaPublicacion,String isbn, String titulo, String autor, String tipo, boolean disponible) {
-        super(isbn, titulo, autor, "noFiccion", fechaPublicacion, disponible);
+    private String tema; // ciencia, historia, etc.
+    private String nivelAcademico; // básico, medio, superior
+
+    public LibroNoFiccion(String isbn, String titulo, String autor, int añoPublicacion, String tema, String nivelAcademico) {
+        super(isbn, titulo, autor, "No ficción", añoPublicacion);
         this.tema = tema;
         this.nivelAcademico = nivelAcademico;
     }
@@ -26,23 +26,16 @@ public class LibroNoFiccion extends Libro{
     public void setNivelAcademico(String nivelAcademico) {
         this.nivelAcademico = nivelAcademico;
     }
-    
-    
 
     @Override
-    public String getDescription() {
-        return getTipo()+ "Libro de género de no ficción, su tema es: " + tema + "y su nivel academico es: " + nivelAcademico;
+    public String getDescripcion() {
+        return getTitulo() + " es un libro de no ficción sobre " + tema +
+               ", orientado a un nivel académico " + nivelAcademico + ".";
     }
 
     @Override
     public String toString() {
-        return "LibroNoFiccion{" + "tema=" + tema + ", nivelAcademico=" + nivelAcademico + '}';
+        return super.toString() + ", Tema: " + tema +
+               ", Nivel académico: " + nivelAcademico;
     }
-
-   
-
-
-    
-    
-    
 }
