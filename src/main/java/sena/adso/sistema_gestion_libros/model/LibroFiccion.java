@@ -5,9 +5,10 @@ public class LibroFiccion extends Libro {
     private boolean esSerie;
 
     public LibroFiccion(String isbn, String titulo, String autor, int añoPublicacion, String genero, boolean esSerie) {
-        super(isbn, titulo, autor, "ficcion", añoPublicacion);
+        super(isbn, titulo, autor, "Ficcion", añoPublicacion);
         this.genero = genero;
         this.esSerie = esSerie;
+        System.out.println("LibroFiccion creado con año: " + añoPublicacion);
     }
 
     public String getGenero() {

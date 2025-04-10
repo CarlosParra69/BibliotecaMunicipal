@@ -82,8 +82,8 @@
                             observaciones = "Sin observaciones";
                         }
                         
-                        // Por ahora, solo usamos la versión simple de devolverLibro
-                        boolean devuelto = manager.devolverLibro(loanId);
+                        // Usar la versión completa de devolverLibro que guarda el estado y las observaciones
+                        boolean devuelto = manager.devolverLibro(loanId, estadoLibro, observaciones);
                         
                         if (devuelto) {
                             // Redirigir a la página de lista con mensaje de éxito

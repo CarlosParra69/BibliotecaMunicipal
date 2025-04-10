@@ -1,5 +1,4 @@
-<%@page import="sena.adso.sistema_gestion_libros.model.LibroManager"%>
-<%@page import="sena.adso.sistema_gestion_libros.model.Libro"%>
+<%@page import="sena.adso.sistema_gestion_libros.model.*"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -68,8 +67,11 @@
                         } else {
                             // El libro no se pudo eliminar (probablemente porque está en préstamo)
                 %>
-                            <div class="alert alert-danger mb-4">
-                                <p>No se puede eliminar el libro porque está actualmente en préstamo.</p>
+                            <div class="alert alert-danger mb-4 text-center">
+                                <p>No se puede eliminar el libro porque está actualmente en préstamo.</p>                                
+                            </div>
+                            <div>
+                                <img src="../img/book.png" alt="Eliminar libro" class="img-fluid rounded" style="max-height: 350px;">
                             </div>
                             <div class="text-center mb-4">
                                 <a href="list.jsp" class="btn btn-primary">Volver a la lista</a>

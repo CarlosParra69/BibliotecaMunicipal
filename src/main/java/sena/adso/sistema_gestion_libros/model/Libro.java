@@ -15,6 +15,7 @@ public abstract class Libro {
         this.tipo = tipo;
         this.añoPublicacion = añoPublicacion;
         this.disponible = true; // Por defecto, el libro está disponible
+        System.out.println("Constructor Libro [CRÍTICO] - ISBN: " + isbn + ", Título: " + titulo + ", Año: " + this.añoPublicacion);
     }
 
     public String getIsbn() {
@@ -50,10 +51,14 @@ public abstract class Libro {
     }
 
     public int getAñoPublicacion() {
+        // El problema parece estar en que este valor siempre es 2000 cuando se recupera
+        // Añadimos más logs para depuración
+        System.out.println("[CRÍTICO] getAñoPublicacion para libro: " + this.titulo + ", AÑO GUARDADO: " + añoPublicacion);
         return añoPublicacion;
     }
 
     public void setAñoPublicacion(int añoPublicacion) {
+        System.out.println("[CRÍTICO] Estableciendo año para " + this.titulo + " de " + this.añoPublicacion + " a " + añoPublicacion);
         this.añoPublicacion = añoPublicacion;
     }
 

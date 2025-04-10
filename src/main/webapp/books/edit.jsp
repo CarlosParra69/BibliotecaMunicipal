@@ -55,28 +55,30 @@
             
             // Verificar si se envió el formulario (actualización)
             if (request.getMethod().equals("POST")) {
-                String titulo = request.getParameter("titulo");
-                String autor = request.getParameter("autor");
-                
-                // Validación para evitar error con año de publicación nulo
-                int añoPublicacion = 2000; // Valor predeterminado
+                String nuevaTitulo = request.getParameter("titulo");
+                String nuevoAutor = request.getParameter("autor");
                 String añoPublicacionStr = request.getParameter("añoPublicacion");
-                if (añoPublicacionStr != null && !añoPublicacionStr.trim().isEmpty()) {
-                    try {
-                        añoPublicacion = Integer.parseInt(añoPublicacionStr);
-                    } catch (NumberFormatException e) {
-                        // Si hay error al convertir, simplemente usamos el valor predeterminado
-                        System.out.println("Error al convertir año de publicación: " + e.getMessage());
-                    }
-                }
-                
-                // Obtener el valor de disponibilidad
                 boolean disponible = "true".equals(request.getParameter("disponible"));
                 
+                int añoPublicacion = libro.getAñoPublicacion(); // Valor actual como respaldo
+                
+                try {
+                    if (añoPublicacionStr != null && !añoPublicacionStr.trim().isEmpty()) {
+                        añoPublicacion = Integer.parseInt(añoPublicacionStr.trim());
+                        System.out.println("En edit.jsp - Año de publicación convertido: " + añoPublicacion);
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("Error al convertir año en edit.jsp: " + e.getMessage());
+                    // Mantenemos el valor actual en caso de error
+                }
+                
                 // Actualizar los campos comunes
-                libro.setTitulo(titulo);
-                libro.setAutor(autor);
+                libro.setTitulo(nuevaTitulo);
+                libro.setAutor(nuevoAutor);
                 libro.setAñoPublicacion(añoPublicacion);
+                
+                System.out.println("Actualizando libro - Año establecido a: " + añoPublicacion);
+                System.out.println("Verificando libro después de actualizar propiedades: " + libro.getAñoPublicacion());
                 
                 // Si el libro no está prestado actualmente, actualizar disponibilidad
                 if (!libro.isDisponible() && disponible) {
@@ -199,7 +201,8 @@
                             
                             <div class="mb-3">
                                 <label for="añoPublicacion" class="form-label">Año de Publicación:</label>
-                                <input type="number" class="form-control" id="añoPublicacion" name="añoPublicacion" value="<%= libro.getAñoPublicacion() %>" required>
+                                <input type="number" class="form-control" id="añoPublicacion" name="añoPublicacion" min="1000" max="<%= new java.util.Date().getYear() + 1900 %>" value="<%= libro.getAñoPublicacion() %>" required>
+                                <small class="text-muted">Ingrese un año válido entre 1000 y <%= new java.util.Date().getYear() + 1900 %></small>
                             </div>
                             
                             <div class="mb-3">
@@ -246,8 +249,8 @@
                                 </small>
                             </div>
                             
-                            <% if (tipoLibro.equals("Ficción")) { %>
-                            <!-- Campos específicos para Ficción -->
+                            <% if (tipoLibro.equals("Ficcion")) { %>
+                            <!-- Campos específicos para Ficcion -->
                             <div id="ficcionFields">
                                 <div class="mb-3">
                                     <label for="genero" class="form-label">Género:</label>
@@ -266,8 +269,8 @@
                                     <label class="form-check-label" for="esSerie">¿Es parte de una serie?</label>
                                 </div>
                             </div>
-                            <% } else if (tipoLibro.equals("No ficción")) { %>
-                            <!-- Campos específicos para No Ficción -->
+                            <% } else if (tipoLibro.equals("NoFiccion")) { %>
+                            <!-- Campos específicos para NoFiccion -->
                             <div id="noFiccionFields">
                                 <div class="mb-3">
                                     <label for="tema" class="form-label">Tema:</label>
@@ -340,13 +343,47 @@
             // Validar año de publicación
             var año = parseInt(añoPublicacion);
             var añoActual = new Date().getFullYear();
-            if (año < 1000 || año > añoActual) {
+            if (isNaN(año) || año < 1000 || año > añoActual) {
                 alert('El año de publicación debe ser válido (entre 1000 y ' + añoActual + ').');
                 return false;
             }
             
             return true;
         }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const tipoLibroSelect = document.getElementById("tipoLibro");
+            const ficcionFields = document.getElementById("ficcionFields");
+            const noFiccionFields = document.getElementById("noFiccionFields");
+            const referenciaFields = document.getElementById("referenciaFields");
+            
+            // Función para mostrar/ocultar campos según el tipo de libro
+            function toggleFields() {
+                const tipoSeleccionado = tipoLibroSelect ? tipoLibroSelect.value : '<%= tipoLibro %>';
+                
+                // Ocultar todos los campos específicos primero
+                if (ficcionFields) ficcionFields.style.display = "none";
+                if (noFiccionFields) noFiccionFields.style.display = "none";
+                if (referenciaFields) referenciaFields.style.display = "none";
+                
+                // Mostrar los campos correspondientes al tipo seleccionado
+                if (tipoSeleccionado === "Ficcion") {
+                    if (ficcionFields) ficcionFields.style.display = "block";
+                } else if (tipoSeleccionado === "NoFiccion") {
+                    if (noFiccionFields) noFiccionFields.style.display = "block";
+                } else if (tipoSeleccionado === "Referencia") {
+                    if (referenciaFields) referenciaFields.style.display = "block";
+                }
+            }
+            
+            // Ejecutar la función al cargar la página
+            toggleFields();
+            
+            // Añadir listener si existe el select
+            if (tipoLibroSelect) {
+                tipoLibroSelect.addEventListener("change", toggleFields);
+            }
+        });
     </script>
 
     <footer>

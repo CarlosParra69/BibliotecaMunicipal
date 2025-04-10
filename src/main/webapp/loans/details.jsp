@@ -1,11 +1,6 @@
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="java.util.Date"%>
-<%@page import="sena.adso.sistema_gestion_libros.model.LibroFiccion"%>
-<%@page import="sena.adso.sistema_gestion_libros.model.LibroNoFiccion"%>
-<%@page import="sena.adso.sistema_gestion_libros.model.LibroReferencia"%>
-<%@page import="sena.adso.sistema_gestion_libros.model.Libro"%>
-<%@page import="sena.adso.sistema_gestion_libros.model.Loan"%>
-<%@page import="sena.adso.sistema_gestion_libros.model.LibroManager"%>
+<%@page import="sena.adso.sistema_gestion_libros.model.*"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -115,10 +110,18 @@
                                 <p><strong>Fecha Límite:</strong> <%= fechaLimite %></p>
                                 <p><strong>Fecha de Devolución:</strong> <%= fechaDevolucion %></p>
                                 
-                                <% if (!prestamo.isActivo()) { %>
+                                <% if (!prestamo.isActivo() && prestamo.getEstadoDevolucion() != null) { %>
                                     <p>
                                         <strong>Estado del libro al devolverlo:</strong> 
-                                        <span class="badge bg-success">Bueno</span>
+                                        <% if (prestamo.getEstadoDevolucion().equalsIgnoreCase("bueno")) { %>
+                                            <span class="badge bg-success">Bueno</span>
+                                        <% } else if (prestamo.getEstadoDevolucion().equalsIgnoreCase("dañado")) { %>
+                                            <span class="badge bg-warning">Dañado</span>
+                                        <% } else if (prestamo.getEstadoDevolucion().equalsIgnoreCase("perdido")) { %>
+                                            <span class="badge bg-danger">Perdido</span>
+                                        <% } else { %>
+                                            <%= prestamo.getEstadoDevolucion() %>
+                                        <% } %>
                                     </p>
                                 <% } %>
                             </div>
@@ -129,18 +132,19 @@
                             </div>
                         </div>
                         
-                        <% if (!prestamo.isActivo()) { %>
+                        <% if (!prestamo.isActivo() && prestamo.getObservaciones() != null && !prestamo.getObservaciones().isEmpty()) { %>
                             <div class="card mb-4">
                                 <div class="card-header bg-info text-white">
                                     <h4 class="mb-0">Observaciones al devolver</h4>
                                 </div>
                                 <div class="card-body">
-                                    <p>Sin observaciones</p>
+                                    <p><%= prestamo.getObservaciones() %></p>
                                 </div>
                             </div>
                         <% } %>
                         
                         <div class="card mb-4">
+                            
                             <div class="card-header bg-light">
                                 <h4 class="mb-0">Información del Libro</h4>
                             </div>
@@ -171,11 +175,12 @@
                                     </div>
                                 </div>
                             </div>
+                                    <div class="text-center mt-4">
+                                        <img src="../img/details.png" alt="Imagen de préstamo" class="img-fluid rounded" style="max-width: 300px;"                                                              ;">
+                                    </div><br>
                         </div>
                         
-                        <div class="text-center mt-4">
-                            <img src="../img/loan.png" alt="Imagen de préstamo" class="img-fluid rounded" style="max-height: 200px;">
-                        </div>
+                        
                         
                         <div class="text-center mt-4">
                             <a href="list.jsp" class="btn btn-secondary">Volver a la Lista</a>

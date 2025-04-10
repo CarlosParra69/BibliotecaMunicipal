@@ -8,6 +8,7 @@ public class LibroReferencia extends Libro {
         super(isbn, titulo, autor, "Referencia", añoPublicacion);
         this.tipoReferencia = tipoReferencia;
         this.actualizaciones = actualizaciones;
+        System.out.println("LibroReferencia creado con año: " + añoPublicacion + ", verificando: " + getAñoPublicacion());
     }
 
     public String getTipoReferencia() {
