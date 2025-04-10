@@ -62,10 +62,9 @@ public class LibroManager {
     public boolean eliminarLibro(String isbn) {
         for (Loan prestamo : prestamos) {
             if (prestamo.getLibro().getIsbn().equalsIgnoreCase(isbn) && prestamo.isActivo()) {
-                return false;
+                return false; // No se puede eliminar si hay un préstamo activo
             }
         }
-
         return libros.removeIf(libro -> libro.getIsbn().equalsIgnoreCase(isbn));
     }
 
@@ -100,11 +99,13 @@ public class LibroManager {
         }
 
         Date fechaPrestamo = new Date();
-        Date fechaDevolucion = new Date(fechaPrestamo.getTime() + (diasPrestamo * 24L * 60L * 60L * 1000L));
+        long tiempoEnMilis = diasPrestamo * 24L * 60L * 60L * 1000L;
+        Date fechaLimite = new Date(fechaPrestamo.getTime() + tiempoEnMilis);
 
-        Loan prestamo = new Loan(nextLoanId++, libro, nombrePrestatario, idPrestatario, fechaPrestamo, fechaDevolucion);
+        Loan prestamo = new Loan(nextLoanId++, libro, nombrePrestatario, idPrestatario, fechaPrestamo, fechaLimite);
         prestamos.add(prestamo);
         libro.setDisponible(false);
+
         return prestamo;
     }
 
@@ -115,7 +116,7 @@ public class LibroManager {
             return false;
         }
 
-        prestamo.devolverLibro(new Date());
+        prestamo.returnLibro(new Date());
         return true;
     }
 }

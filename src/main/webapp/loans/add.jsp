@@ -1,3 +1,9 @@
+<%@page import="java.text.SimpleDateFormat"%>
+<%@page import="java.util.Date"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="sena.adso.sistema_gestion_libros.model.Libro"%>
+<%@page import="sena.adso.sistema_gestion_libros.model.Loan"%>
+<%@page import="sena.adso.sistema_gestion_libros.model.LibroManager"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -7,7 +13,7 @@
     <link rel="icon" href="../img/book-closed-svgrepo-com.svg" type="image/svg+xml">
     <link rel="stylesheet" href="../css/styles.css">
     <%-- Incluir scripts y estilos para tema --%>
-        <%@ include file="/includes/theme-script.jsp" %>
+    <%@ include file="/includes/theme-script.jsp" %>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
     <script>
@@ -19,6 +25,16 @@
                 alert('La fecha de devolución debe ser posterior a la fecha de préstamo.');
                 return false;
             }
+            
+            // Validar que la fecha de préstamo no sea anterior a hoy
+            var today = new Date();
+            today.setHours(0, 0, 0, 0); // Resetear la hora para comparar solo fechas
+            
+            if (loanDate < today) {
+                alert('La fecha de préstamo no puede ser anterior a hoy.');
+                return false;
+            }
+            
             return true;
         }
     </script>
@@ -40,49 +56,134 @@
     </nav>
 
     <div class="container">
-        <div class="row align-items-center">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header bg-success text-white">
-                        <h3 class="mb-0">Nuevo Préstamo</h3>
+        <%
+            // Obtener el gestor de libros
+            LibroManager manager = LibroManager.getInstance();
+            
+            // Verificar si se envió el formulario
+            if (request.getMethod().equals("POST")) {
+                // Obtener datos del formulario
+                String isbn = request.getParameter("isbn");
+                String nombrePrestatario = request.getParameter("nombrePrestatario");
+                String idPrestatario = request.getParameter("idPrestatario");
+                
+                // Calcular días de préstamo
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                Date fechaPrestamo = sdf.parse(request.getParameter("loanDate"));
+                Date fechaDevolucion = sdf.parse(request.getParameter("returnDate"));
+                
+                long diferencia = fechaDevolucion.getTime() - fechaPrestamo.getTime();
+                int diasPrestamo = (int) (diferencia / (1000 * 60 * 60 * 24));
+                
+                // Crear el préstamo
+                Loan prestamo = manager.crearPrestamo(isbn, nombrePrestatario, idPrestatario, diasPrestamo);
+                
+                if (prestamo != null) {
+                    // Préstamo creado exitosamente, redirigir a la página de lista
+                    response.sendRedirect("list.jsp?action=add");
+                } else {
+                    // Error al crear el préstamo (libro no disponible)
+        %>
+                    <div class="alert alert-danger mb-4">
+                        <p>No se pudo crear el préstamo. El libro no está disponible o no existe.</p>
                     </div>
-                    <div class="card-body">
-                        <form action="LoanController" method="post" onsubmit="return validateForm();">
-                            <input type="hidden" name="action" value="add">
-
-                            <div class="mb-3">
-                                <label for="bookId" class="form-label">ID del Libro:</label>
-                                <input type="number" class="form-control" id="bookId" name="bookId" required>
+        <%
+                }
+                return;
+            }
+            
+            // Obtener libros disponibles
+            ArrayList<Libro> librosDisponibles = manager.getLibrosDisponibles();
+            
+            // Verificar si hay libros disponibles
+            if (librosDisponibles.isEmpty()) {
+        %>
+                <div class="alert alert-danger mb-4">
+                    <p>No hay libros disponibles para préstamo en este momento.</p>
+                </div>
+                <div class="text-center mb-4">
+                    <a href="list.jsp" class="btn btn-primary">Volver a la lista de préstamos</a>
+                </div>
+        <%
+            } else {
+                // Verificar si se proporcionó un ISBN en la solicitud (desde la lista de libros)
+                String isbnParam = request.getParameter("isbn");
+                String selectedIsbn = "";
+                
+                if (isbnParam != null && !isbnParam.isEmpty()) {
+                    selectedIsbn = isbnParam;
+                }
+                
+                // Obtener la fecha actual para los campos de fecha
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                String fechaHoy = sdf.format(new Date());
+                
+                // Calcular fecha predeterminada de devolución (7 días después)
+                Calendar cal = Calendar.getInstance();
+                cal.add(Calendar.DAY_OF_MONTH, 7);
+                String fechaDevolucion = sdf.format(cal.getTime());
+        %>
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header bg-success text-white">
+                                <h3 class="mb-0">Nuevo Préstamo</h3>
                             </div>
-
-                            <div class="mb-3">
-                                <label for="borrower" class="form-label">Nombre del Prestatario:</label>
-                                <input type="text" class="form-control" id="borrower" name="borrower" required>
+                            <div class="card-body">
+                                <form action="add-loan.jsp" method="post" onsubmit="return validateForm();">
+                                    <div class="mb-3">
+                                        <label for="isbn" class="form-label">Libro:</label>
+                                        <select class="form-control" id="isbn" name="isbn" required>
+                                            <option value="">Seleccione un libro</option>
+                                            <% for (Libro libro : librosDisponibles) { %>
+                                                <option value="<%= libro.getIsbn() %>" <%= libro.getIsbn().equals(selectedIsbn) ? "selected" : "" %>>
+                                                    <%= libro.getTitulo() %> (<%= libro.getAutor() %>, <%= libro.getTipo() %>)
+                                                </option>
+                                            <% } %>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="nombrePrestatario" class="form-label">Nombre del Prestatario:</label>
+                                        <input type="text" class="form-control" id="nombrePrestatario" name="nombrePrestatario" required>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="idPrestatario" class="form-label">ID del Prestatario:</label>
+                                        <input type="text" class="form-control" id="idPrestatario" name="idPrestatario" required>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="loanDate" class="form-label">Fecha de Préstamo:</label>
+                                        <input type="date" class="form-control" id="loanDate" name="loanDate" value="<%= fechaHoy %>" required>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="returnDate" class="form-label">Fecha de Devolución:</label>
+                                        <input type="date" class="form-control" id="returnDate" name="returnDate" value="<%= fechaDevolucion %>" required>
+                                        <small class="text-muted">Fecha límite para devolver el libro (predeterminado: 7 días).</small>
+                                    </div>
+                                    
+                                    <div class="text-center mt-4">
+                                        <button type="submit" class="btn btn-success">Crear Préstamo</button>
+                                        <a href="list.jsp" class="btn btn-secondary">Cancelar</a>
+                                    </div>
+                                </form>
                             </div>
-
-                            <div class="mb-3">
-                                <label for="loanDate" class="form-label">Fecha de Préstamo:</label>
-                                <input type="date" class="form-control" id="loanDate" name="loanDate" required>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 text-center">
+                        <img src="../img/loan.png" alt="Imagen de préstamo" class="img-fluid rounded" style="max-height: 350px;">
+                        <div class="mt-3">
+                            <div class="alert alert-info">
+                                <p><strong>Nota:</strong> Los préstamos se registran con la fecha actual por defecto.</p>
+                                <p>La fecha de devolución predeterminada es de 7 días a partir de hoy.</p>
                             </div>
-
-                            <div class="mb-3">
-                                <label for="returnDate" class="form-label">Fecha de Devolución:</label>
-                                <input type="date" class="form-control" id="returnDate" name="returnDate" required>
-                            </div>
-
-                            <div class="text-center mt-4">
-                                <button type="submit" class="btn btn-success">Guardar Préstamo</button>
-                                <a href="list.jsp" class="btn btn-secondary">Cancelar</a>
-                            </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
-            </div>
-
-            <div class="col-md-6 text-center">
-                <img src="../img/loan.png" alt="Imagen de préstamo" class="img-fluid rounded" style="max-height: 350px;">
-            </div>
-        </div>
+        <% } %>
     </div>
 
     <footer>

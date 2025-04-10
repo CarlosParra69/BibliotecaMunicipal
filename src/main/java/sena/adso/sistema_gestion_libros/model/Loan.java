@@ -85,12 +85,12 @@ public class Loan {
         this.libro.setDisponible(true);
     }
 
-    public boolean estaActivo() {
+    public boolean isActivo() {
         return fechaDevolucion == null;
     }
 
     public boolean estaVencido() {
-        if (!estaActivo()) {
+        if (!isActivo()) {
             return false;
         }
         Date hoy = new Date();
@@ -106,14 +106,6 @@ public class Loan {
                 "\nFecha del préstamo: " + formatoFecha.format(fechaPrestamo) +
                 "\nFecha límite: " + formatoFecha.format(fechaLimite) +
                 "\nFecha de devolución: " + (fechaDevolucion != null ? formatoFecha.format(fechaDevolucion) : "No devuelto") +
-                "\nEstado: " + (estaActivo() ? (estaVencido() ? "Vencido" : "Activo") : "Devuelto");
-    }
-
-    void devolverLibro(Date date) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    boolean isActivo() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+                "\nEstado: " + (isActivo() ? (estaVencido() ? "Vencido" : "Activo") : "Devuelto");
     }
 }
