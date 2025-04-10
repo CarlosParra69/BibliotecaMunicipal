@@ -6,6 +6,9 @@
 <%@page import="sena.adso.sistema_gestion_libros.model.LibroManager"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.text.SimpleDateFormat"%>
+<%@page import="java.util.Date"%>
+<%@page import="java.io.*"%>
+<%@page import="java.lang.*"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -80,19 +83,15 @@
                         // Intentar corregir el año del libro si es necesario
                         LibroManager manager = LibroManager.getInstance();
                         manager.corregirAñoLibro(isbnParam, añoPublicacionRecibido);
-                        
-                        System.out.println("[CRÍTICO] Intentado corregir el año para libro con ISBN: " + 
-                                          isbnParam + " a " + añoPublicacionRecibido);
                     } catch (Exception e) {
-                        System.out.println("[CRÍTICO] Error al corregir año: " + e.getMessage());
+                        // Error al corregir año
                     }
                 } else if (añoPublicacionParam != null && !añoPublicacionParam.isEmpty()) {
                     try {
                         int añoPublicacionRecibido = Integer.parseInt(añoPublicacionParam);
                         session.setAttribute("ultimoAñoPublicacion", añoPublicacionRecibido);
-                        System.out.println("[CRÍTICO] Guardado año recibido como parámetro: " + añoPublicacionRecibido);
                     } catch (Exception e) {
-                        System.out.println("[CRÍTICO] Error al parsear año en parámetro: " + e.getMessage());
+                        // Error al parsear año
                     }
                 }
             
@@ -106,17 +105,10 @@
                 ArrayList<Libro> todosLosLibros = manager.getTodosLosLibros();
                 
                 // Realizar una comprobación adicional de todos los libros para depuración
-                System.out.println("VERIFICACIÓN DETALLADA DE LIBROS AL CARGAR LIST.JSP:");
                 if (todosLosLibros.isEmpty()) {
-                    System.out.println("  - No hay libros para mostrar");
+                    // No hay libros para mostrar
                 } else {
-                    for (int i = 0; i < todosLosLibros.size(); i++) {
-                        Libro l = todosLosLibros.get(i);
-                        System.out.println("  Libro #" + (i+1) + ": " + l.getTitulo() + 
-                                       " (ISBN: " + l.getIsbn() + 
-                                       ", Año: " + l.getAñoPublicacion() + 
-                                       ", Tipo: " + l.getTipo() + ")");
-                    }
+                    // Libros encontrados
                 }
                 
                 // Obtener libros disponibles
@@ -251,19 +243,15 @@
                                             if (libro instanceof LibroFiccion) {
                                                 LibroFiccion lf = (LibroFiccion)libro;
                                                 añoReal = lf.getAñoPublicacion();
-                                                System.out.println("[CRÍTICO] LibroFiccion " + libro.getTitulo() + " - año: " + añoReal);
                                             } else if (libro instanceof LibroNoFiccion) {
                                                 LibroNoFiccion lnf = (LibroNoFiccion)libro;
                                                 añoReal = lnf.getAñoPublicacion();
-                                                System.out.println("[CRÍTICO] LibroNoFiccion " + libro.getTitulo() + " - año: " + añoReal);
                                             } else if (libro instanceof LibroReferencia) {
                                                 LibroReferencia lr = (LibroReferencia)libro;
                                                 añoReal = lr.getAñoPublicacion();
-                                                System.out.println("[CRÍTICO] LibroReferencia " + libro.getTitulo() + " - año: " + añoReal);
                                             } else {
                                                 // Acceso directo a la propiedad como último recurso
                                                 añoReal = libro.getAñoPublicacion();
-                                                System.out.println("[CRÍTICO] Libro genérico " + libro.getTitulo() + " - año: " + añoReal);
                                             }
                                             
                                             // Si llegamos a tener algún error, usar una solución de emergencia
@@ -273,9 +261,8 @@
                                                 if (añoPublicacionStr != null && !añoPublicacionStr.isEmpty()) {
                                                     try {
                                                         añoReal = Integer.parseInt(añoPublicacionStr);
-                                                        System.out.println("[CRÍTICO] Usando año de parámetro URL: " + añoReal);
                                                     } catch (Exception e) {
-                                                        System.out.println("[CRÍTICO] Error al parsear año del parámetro URL: " + e.getMessage());
+                                                        // Error al parsear año del parámetro URL
                                                     }
                                                 }
                                                 
@@ -283,9 +270,8 @@
                                                 if (añoReal == 2000 && session.getAttribute("ultimoAñoPublicacion") != null) {
                                                     try {
                                                         añoReal = (Integer)session.getAttribute("ultimoAñoPublicacion");
-                                                        System.out.println("[CRÍTICO] Usando año de sesión: " + añoReal);
                                                     } catch (Exception e) {
-                                                        System.out.println("[CRÍTICO] Error al obtener año de sesión: " + e.getMessage());
+                                                        // Error al obtener año de sesión
                                                     }
                                                 }
                                             }
@@ -293,7 +279,7 @@
                                             <%= añoReal %>
                                         <%
                                         } catch (Exception e) {
-                                            System.out.println("[CRÍTICO] Error al procesar año: " + e.getMessage());
+                                            // Error al procesar año
                                         %>
                                             <%= libro.getAñoPublicacion() %>
                                         <% } %>
