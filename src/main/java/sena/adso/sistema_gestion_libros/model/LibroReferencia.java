@@ -4,11 +4,10 @@ public class LibroReferencia extends Libro {
     private String tipoReferencia; // enciclopedia, diccionario, manual, etc.
     private String actualizaciones; // última edición, revisiones, año, etc.
 
-    public LibroReferencia(String isbn, String titulo, String autor, int añoPublicacion, String tipoReferencia, String actualizaciones) {
+    public LibroReferencia(String isbn, String titulo, String autor, String añoPublicacion, String tipoReferencia, String actualizaciones) {
         super(isbn, titulo, autor, "Referencia", añoPublicacion);
-        this.tipoReferencia = tipoReferencia;
-        this.actualizaciones = actualizaciones;
-        System.out.println("LibroReferencia creado con año: " + añoPublicacion + ", verificando: " + getAñoPublicacion());
+        this.tipoReferencia = tipoReferencia != null ? tipoReferencia : "Enciclopedia";
+        this.actualizaciones = actualizaciones != null ? actualizaciones : "";
     }
 
     public String getTipoReferencia() {
@@ -16,7 +15,7 @@ public class LibroReferencia extends Libro {
     }
 
     public void setTipoReferencia(String tipoReferencia) {
-        this.tipoReferencia = tipoReferencia;
+        this.tipoReferencia = tipoReferencia != null ? tipoReferencia : "Enciclopedia";
     }
 
     public String getActualizaciones() {
@@ -24,18 +23,18 @@ public class LibroReferencia extends Libro {
     }
 
     public void setActualizaciones(String actualizaciones) {
-        this.actualizaciones = actualizaciones;
+        this.actualizaciones = actualizaciones != null ? actualizaciones : "";
     }
 
     @Override
     public String getDescripcion() {
         return getTitulo() + " es un libro de referencia del tipo " + tipoReferencia +
-               ". Últimas actualizaciones: " + actualizaciones + ".";
+               ". Últimas actualizaciones: " + (actualizaciones.isEmpty() ? "Sin actualizaciones" : actualizaciones) + ".";
     }
 
     @Override
     public String toString() {
         return super.toString() + ", Tipo de referencia: " + tipoReferencia +
-               ", Actualizaciones: " + actualizaciones;
+               ", Actualizaciones: " + (actualizaciones.isEmpty() ? "Sin actualizaciones" : actualizaciones);
     }
 }

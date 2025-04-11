@@ -30,15 +30,6 @@
                 return false;
             }
             
-            // Validar que la fecha de préstamo no sea anterior a hoy
-            var today = new Date();
-            today.setHours(0, 0, 0, 0); // Resetear la hora para comparar solo fechas
-            
-            if (loanDate < today) {
-                showErrorAlert('Error en fechas', 'La fecha de préstamo no puede ser anterior a hoy.');
-                return false;
-            }
-            
             return true;
         }
     </script>
@@ -72,15 +63,16 @@
                     String nombrePrestatario = request.getParameter("nombrePrestatario");
                     String idPrestatario = request.getParameter("idPrestatario");
                     
-                    // Calcular días de préstamo
+                    // Convertir las fechas de string a Date
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                     Date fechaPrestamo = sdf.parse(request.getParameter("loanDate"));
                     Date fechaDevolucion = sdf.parse(request.getParameter("returnDate"));
                     
+                    // Calcular días de préstamo basado en la diferencia de días
                     long diferencia = fechaDevolucion.getTime() - fechaPrestamo.getTime();
                     int diasPrestamo = (int) (diferencia / (1000 * 60 * 60 * 24));
                     
-                    // Crear el préstamo
+                    // Usar el método original con el número de días calculado
                     Loan prestamo = manager.crearPrestamo(isbn, nombrePrestatario, idPrestatario, diasPrestamo);
                     
                     if (prestamo != null) {
@@ -127,13 +119,14 @@
                 }
                 
                 // Obtener la fecha actual para los campos de fecha
+                Calendar calHoy = Calendar.getInstance();
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                String fechaHoy = sdf.format(new Date());
+                String fechaHoy = sdf.format(calHoy.getTime());
                 
                 // Calcular fecha predeterminada de devolución (7 días después)
-                Calendar cal = Calendar.getInstance();
-                cal.add(Calendar.DAY_OF_MONTH, 7);
-                String fechaDevolucion = sdf.format(cal.getTime());
+                Calendar calDevolucion = Calendar.getInstance();
+                calDevolucion.add(Calendar.DAY_OF_MONTH, 7);
+                String fechaDevolucion = sdf.format(calDevolucion.getTime());
         %>
                 <div class="row align-items-center">
                     <div class="col-md-6">

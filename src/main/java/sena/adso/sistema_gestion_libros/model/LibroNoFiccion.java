@@ -5,11 +5,10 @@ public class LibroNoFiccion extends Libro {
     private String tema; // historia, ciencia, biografía, etc.
     private String nivelAcademico; // básico, intermedio, avanzado
 
-    public LibroNoFiccion(String isbn, String titulo, String autor, int añoPublicacion, String tema, String nivelAcademico) {
+    public LibroNoFiccion(String isbn, String titulo, String autor, String añoPublicacion, String tema, String nivelAcademico) {
         super(isbn, titulo, autor, "NoFiccion", añoPublicacion);
-        this.tema = tema;
-        this.nivelAcademico = nivelAcademico;
-        System.out.println("LibroNoFiccion creado con año: " + añoPublicacion + ", verificando: " + getAñoPublicacion());
+        this.tema = tema != null ? tema : "Ciencia";
+        this.nivelAcademico = nivelAcademico != null ? nivelAcademico : "Básico";
     }
 
     public String getTema() {
@@ -17,7 +16,7 @@ public class LibroNoFiccion extends Libro {
     }
 
     public void setTema(String tema) {
-        this.tema = tema;
+        this.tema = tema != null ? tema : "Ciencia";
     }
 
     public String getNivelAcademico() {
@@ -25,7 +24,7 @@ public class LibroNoFiccion extends Libro {
     }
 
     public void setNivelAcademico(String nivelAcademico) {
-        this.nivelAcademico = nivelAcademico;
+        this.nivelAcademico = nivelAcademico != null ? nivelAcademico : "Básico";
     }
 
     @Override

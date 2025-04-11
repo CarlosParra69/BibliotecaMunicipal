@@ -5,17 +5,21 @@ public abstract class Libro {
     private String titulo;
     private String autor;
     private String tipo;
-    private int añoPublicacion;
+    private String añoPublicacion;
     private boolean disponible;
 
-    public Libro(String isbn, String titulo, String autor, String tipo, int añoPublicacion) {
+    public Libro(String isbn, String titulo, String autor, String tipo, String añoPublicacion) {
         this.isbn = isbn;
         this.titulo = titulo;
         this.autor = autor;
         this.tipo = tipo;
-        this.añoPublicacion = añoPublicacion;
+        // Validamos que el año no sea nulo ni vacío
+        if (añoPublicacion != null && !añoPublicacion.trim().isEmpty()) {
+            this.añoPublicacion = añoPublicacion.trim();
+        } else {
+            this.añoPublicacion = "Sin información";
+        }
         this.disponible = true; // Por defecto, el libro está disponible
-        System.out.println("Constructor Libro [CRÍTICO] - ISBN: " + isbn + ", Título: " + titulo + ", Año: " + this.añoPublicacion);
     }
 
     public String getIsbn() {
@@ -50,16 +54,17 @@ public abstract class Libro {
         this.tipo = tipo;
     }
 
-    public int getAñoPublicacion() {
-        // El problema parece estar en que este valor siempre es 2000 cuando se recupera
-        // Añadimos más logs para depuración
-        System.out.println("[CRÍTICO] getAñoPublicacion para libro: " + this.titulo + ", AÑO GUARDADO: " + añoPublicacion);
+    public String getAñoPublicacion() {
         return añoPublicacion;
     }
 
-    public void setAñoPublicacion(int añoPublicacion) {
-        System.out.println("[CRÍTICO] Estableciendo año para " + this.titulo + " de " + this.añoPublicacion + " a " + añoPublicacion);
-        this.añoPublicacion = añoPublicacion;
+    public void setAñoPublicacion(String añoPublicacion) {
+        // Validamos que el año no sea nulo ni vacío
+        if (añoPublicacion != null && !añoPublicacion.trim().isEmpty()) {
+            this.añoPublicacion = añoPublicacion.trim();
+        } else {
+            this.añoPublicacion = "Sin información";
+        }
     }
 
     public boolean isDisponible() {

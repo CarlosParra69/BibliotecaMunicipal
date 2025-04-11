@@ -51,11 +51,9 @@
                 return false;
             }
             
-            // Validar año de publicación
-            var año = parseInt(añoPublicacion);
-            var añoActual = new Date().getFullYear();
-            if (isNaN(año) || año < 1000 || año > añoActual) {
-                showErrorAlert('Año inválido', 'El año de publicación debe ser válido (entre 1000 y ' + añoActual + ').');
+            // Validar año de publicación - solo verificar que no esté vacío
+            if (añoPublicacion.trim() === '') {
+                showErrorAlert('Año de publicación requerido', 'Por favor ingrese un año de publicación.');
                 return false;
             }
             
@@ -95,21 +93,40 @@
                     String titulo = request.getParameter("titulo");
                     String autor = request.getParameter("autor");
                     String tipo = request.getParameter("tipo");
-                    String añoPublicacionStr = request.getParameter("añoPublicacion");
+                    String añoPublicacion = request.getParameter("añoPublicacion");
                     
-                    // Valor predeterminado para el año
-                    int añoPublicacion = 2000; 
-                    
-                    try {
-                        if (añoPublicacionStr != null && !añoPublicacionStr.trim().isEmpty()) {
-                            añoPublicacion = Integer.parseInt(añoPublicacionStr.trim());
-                        }
-                    } catch (NumberFormatException e) {
-                        // Si hay error al convertir, usamos el valor predeterminado
+                    // Validar datos
+                    if (isbn == null || isbn.trim().isEmpty()) {
+                        errorMsg = "ISBN no puede estar vacío";
+                        throw new Exception(errorMsg);
                     }
                     
-                    // Guardar el año para uso en los parámetros
-                    session.setAttribute("ultimoAñoPublicacion", añoPublicacion);
+                    if (titulo == null || titulo.trim().isEmpty()) {
+                        errorMsg = "Título no puede estar vacío";
+                        throw new Exception(errorMsg);
+                    }
+                    
+                    if (autor == null || autor.trim().isEmpty()) {
+                        errorMsg = "Autor no puede estar vacío";
+                        throw new Exception(errorMsg);
+                    }
+                    
+                    // Validar año de publicación
+                    try {
+                        if (añoPublicacion == null || añoPublicacion.trim().isEmpty()) {
+                            añoPublicacion = "Sin información";
+                        } else {
+                            int año = Integer.parseInt(añoPublicacion);
+                            int añoActual = new java.util.Date().getYear() + 1900;
+                            if (año < 1000 || año > añoActual) {
+                                errorMsg = "Año de publicación debe estar entre 1000 y " + añoActual;
+                                throw new Exception(errorMsg);
+                            }
+                        }
+                    } catch (NumberFormatException e) {
+                        errorMsg = "Año de publicación debe ser un número válido";
+                        throw new Exception(errorMsg);
+                    }
                     
                     // Obtener el gestor de libros
                     LibroManager manager = LibroManager.getInstance();
@@ -147,14 +164,9 @@
                     
                     // Agregar el libro si se creó correctamente
                     if (nuevoLibro != null) {
-                        // Establecer el año explícitamente de nuevo antes de agregar (por si acaso)
-                        nuevoLibro.setAñoPublicacion(añoPublicacion);
-                        
                         manager.agregarLibro(nuevoLibro);
                         
-                        manager.verificarEstadoContenedor();
-                        
-                        response.sendRedirect("list.jsp?action=add&añoPublicacion=" + añoPublicacion + "&isbn=" + isbn);
+                        response.sendRedirect("list.jsp?action=add");
                         return;
                     }
                     
@@ -205,8 +217,9 @@
                             
                             <div class="mb-3">
                                 <label for="añoPublicacion" class="form-label">Año de publicación:</label>
-                                <input type="number" class="form-control" id="añoPublicacion" name="añoPublicacion" min="1000" max="<%= new java.util.Date().getYear() + 1900 %>" value="2014">
-                                <small class="text-muted">Ingrese un año válido entre 1000 y <%= new java.util.Date().getYear() + 1900 %></small>
+                                <input type="number" class="form-control" id="añoPublicacion" name="añoPublicacion" 
+                                       value="2014" min="1000" max="<%= new java.util.Date().getYear() + 1900 %>" required>
+                                <small class="text-muted">Ingrese el año de publicación (entre 1000 y <%= new java.util.Date().getYear() + 1900 %>)</small>
                             </div>
                             
                             <!-- Campos específicos para Ficción -->

@@ -144,7 +144,6 @@
                         <% } %>
                         
                         <div class="card mb-4">
-                            
                             <div class="card-header bg-light">
                                 <h4 class="mb-0">Información del Libro</h4>
                             </div>
@@ -175,12 +174,11 @@
                                     </div>
                                 </div>
                             </div>
-                                    <div class="text-center mt-4">
-                                        <img src="../img/details.png" alt="Imagen de préstamo" class="img-fluid rounded" style="max-width: 300px;"                                                              ;">
-                                    </div><br>
+                            <div class="text-center mt-4">
+                                <img src="../img/details.png" alt="Imagen de préstamo" class="img-fluid rounded" style="max-width: 300px;">
+                            </div>
+                            <br>
                         </div>
-                        
-                        
                         
                         <div class="text-center mt-4">
                             <a href="list.jsp" class="btn btn-secondary">Volver a la Lista</a>

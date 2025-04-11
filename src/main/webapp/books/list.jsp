@@ -1,9 +1,4 @@
-<%@page import="sena.adso.sistema_gestion_libros.model.Loan"%>
-<%@page import="sena.adso.sistema_gestion_libros.model.LibroReferencia"%>
-<%@page import="sena.adso.sistema_gestion_libros.model.LibroNoFiccion"%>
-<%@page import="sena.adso.sistema_gestion_libros.model.LibroFiccion"%>
-<%@page import="sena.adso.sistema_gestion_libros.model.Libro"%>
-<%@page import="sena.adso.sistema_gestion_libros.model.LibroManager"%>
+<%@page import="sena.adso.sistema_gestion_libros.model.*"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="java.util.Date"%>
@@ -69,47 +64,11 @@
 
         <div class="container">
             <%
-                // Verificar si se ha recibido un año de publicación como parámetro
-                String añoPublicacionParam = request.getParameter("añoPublicacion");
-                String isbnParam = request.getParameter("isbn");
-                
-                // Si tenemos tanto el ISBN como el año, intentar corregir el libro
-                if (añoPublicacionParam != null && !añoPublicacionParam.isEmpty() && 
-                    isbnParam != null && !isbnParam.isEmpty()) {
-                    try {
-                        int añoPublicacionRecibido = Integer.parseInt(añoPublicacionParam);
-                        session.setAttribute("ultimoAñoPublicacion", añoPublicacionRecibido);
-                        
-                        // Intentar corregir el año del libro si es necesario
-                        LibroManager manager = LibroManager.getInstance();
-                        manager.corregirAñoLibro(isbnParam, añoPublicacionRecibido);
-                    } catch (Exception e) {
-                        // Error al corregir año
-                    }
-                } else if (añoPublicacionParam != null && !añoPublicacionParam.isEmpty()) {
-                    try {
-                        int añoPublicacionRecibido = Integer.parseInt(añoPublicacionParam);
-                        session.setAttribute("ultimoAñoPublicacion", añoPublicacionRecibido);
-                    } catch (Exception e) {
-                        // Error al parsear año
-                    }
-                }
-            
                 // Obtener el gestor de libros
                 LibroManager manager = LibroManager.getInstance();
                 
-                // Verificar el estado del contenedor para diagnóstico
-                manager.verificarEstadoContenedor();
-                
                 // Obtener todos los libros
                 ArrayList<Libro> todosLosLibros = manager.getTodosLosLibros();
-                
-                // Realizar una comprobación adicional de todos los libros para depuración
-                if (todosLosLibros.isEmpty()) {
-                    // No hay libros para mostrar
-                } else {
-                    // Libros encontrados
-                }
                 
                 // Obtener libros disponibles
                 ArrayList<Libro> librosDisponibles = manager.getLibrosDisponibles();
@@ -217,71 +176,27 @@
                     <table class="table table-striped table-hover">
                         <thead class="table-dark">
                             <tr>
-                                <th >ISBN</th>
-                                <th >Título</th>
-                                <th >Autor</th>
-                                <th >Tipo</th>
-                                <th >Año</th>
-                                <th >Estado</th>
+                                <th>ISBN</th>
+                                <th>Título</th>
+                                <th>Autor</th>
+                                <th>Tipo</th>
+                                <th>Año de Publicacion</th>
+                                <th>Estado</th>
                                 <th class="text-center">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <% for (Libro libro : todosLosLibros) { 
-                                int añoPublicacion = libro.getAñoPublicacion(); // Obtener el año directamente
-                            %>
+                            <% for (Libro libro : todosLosLibros) { %>
                                 <tr>
                                     <td><%= libro.getIsbn() %></td>
                                     <td><%= libro.getTitulo() %></td>
                                     <td><%= libro.getAutor() %></td>  
                                     <td><%= libro.getTipo() %></td>
-                                    <td>
-                                        <% 
-                                        try {
-                                            // Obtener el año directamente desde la propiedad del objeto específico
-                                            int añoReal = -1;
-                                            if (libro instanceof LibroFiccion) {
-                                                LibroFiccion lf = (LibroFiccion)libro;
-                                                añoReal = lf.getAñoPublicacion();
-                                            } else if (libro instanceof LibroNoFiccion) {
-                                                LibroNoFiccion lnf = (LibroNoFiccion)libro;
-                                                añoReal = lnf.getAñoPublicacion();
-                                            } else if (libro instanceof LibroReferencia) {
-                                                LibroReferencia lr = (LibroReferencia)libro;
-                                                añoReal = lr.getAñoPublicacion();
-                                            } else {
-                                                // Acceso directo a la propiedad como último recurso
-                                                añoReal = libro.getAñoPublicacion();
-                                            }
-                                            
-                                            // Si llegamos a tener algún error, usar una solución de emergencia
-                                            String añoPublicacionStr = request.getParameter("añoPublicacion");
-                                            if (añoReal == 2000) {
-                                                // Intentar primero el parámetro de la URL
-                                                if (añoPublicacionStr != null && !añoPublicacionStr.isEmpty()) {
-                                                    try {
-                                                        añoReal = Integer.parseInt(añoPublicacionStr);
-                                                    } catch (Exception e) {
-                                                        // Error al parsear año del parámetro URL
-                                                    }
-                                                }
-                                                
-                                                // Si sigue siendo 2000, intentar con el valor de sesión
-                                                if (añoReal == 2000 && session.getAttribute("ultimoAñoPublicacion") != null) {
-                                                    try {
-                                                        añoReal = (Integer)session.getAttribute("ultimoAñoPublicacion");
-                                                    } catch (Exception e) {
-                                                        // Error al obtener año de sesión
-                                                    }
-                                                }
-                                            }
-                                        %>
-                                            <%= añoReal %>
-                                        <%
-                                        } catch (Exception e) {
-                                            // Error al procesar año
-                                        %>
+                                    <td class="text-center">
+                                        <% if (libro.getAñoPublicacion() != null && !libro.getAñoPublicacion().equals("Sin información") && !libro.getAñoPublicacion().equals("null")) { %>
                                             <%= libro.getAñoPublicacion() %>
+                                        <% } else { %>
+                                            <span class="text-muted">Sin información</span>
                                         <% } %>
                                     </td>
                                     <td>

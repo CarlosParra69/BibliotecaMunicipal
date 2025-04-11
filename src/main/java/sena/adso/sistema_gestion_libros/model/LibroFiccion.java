@@ -4,11 +4,10 @@ public class LibroFiccion extends Libro {
     private String genero; // fantasía, ciencia ficción, misterio, etc.
     private boolean esSerie;
 
-    public LibroFiccion(String isbn, String titulo, String autor, int añoPublicacion, String genero, boolean esSerie) {
+    public LibroFiccion(String isbn, String titulo, String autor, String añoPublicacion, String genero, boolean esSerie) {
         super(isbn, titulo, autor, "Ficcion", añoPublicacion);
-        this.genero = genero;
+        this.genero = genero != null ? genero : "Fantasía";
         this.esSerie = esSerie;
-        System.out.println("LibroFiccion creado con año: " + añoPublicacion);
     }
 
     public String getGenero() {
@@ -16,7 +15,7 @@ public class LibroFiccion extends Libro {
     }
 
     public void setGenero(String genero) {
-        this.genero = genero;
+        this.genero = genero != null ? genero : "Fantasía";
     }
 
     public boolean isEsSerie() {
