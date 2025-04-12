@@ -1,8 +1,7 @@
-<%@page import="sena.adso.sistema_gestion_libros.model.Loan"%>
 <%@page import="sena.adso.sistema_gestion_libros.model.*"%>
 <%@page import="java.io.*"%>
 <%@page import="java.lang.*"%>
-<%@page import="java.util.Date"%>
+<%@page import="java.util.*"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -38,7 +37,7 @@
             var titulo = document.getElementById('titulo').value;
             var autor = document.getElementById('autor').value;
             var tipo = document.getElementById('tipo').value;
-            var añoPublicacion = document.getElementById('añoPublicacion').value;
+            var añoPublicacion = document.getElementById('anioPub').value;
             
             // Solo verificar que título, autor y tipo estén completos
             if (!isbn || !titulo || !autor || !tipo) {
@@ -52,9 +51,21 @@
                 return false;
             }
             
-            // Validar año de publicación - solo verificar que no esté vacío
+            // Validar año de publicación - verificar que no esté vacío y sea un número válido
             if (añoPublicacion.trim() === '') {
                 showErrorAlert('Año de publicación requerido', 'Por favor ingrese un año de publicación.');
+                return false;
+            }
+            
+            try {
+                var añoNum = parseInt(añoPublicacion);
+                var añoActual = new Date().getFullYear();
+                if (isNaN(añoNum) || añoNum < 1000 || añoNum > añoActual) {
+                    showErrorAlert('Año de publicación inválido', 'El año debe ser un número entre 1000 y ' + añoActual);
+                    return false;
+                }
+            } catch (e) {
+                showErrorAlert('Año de publicación inválido', 'Por favor ingrese un año válido.');
                 return false;
             }
             
@@ -86,32 +97,37 @@
     <div class="container">
         <%
             String errorMsg = null;
-            Libro libroEditar = null;
+            Libro libroAEditar = null;
             
             // Obtener el ISBN del libro a editar
             String isbnEditar = request.getParameter("isbn");
             
+            // Si no hay ISBN, redireccionar a la lista
             if (isbnEditar == null || isbnEditar.trim().isEmpty()) {
-                errorMsg = "ISBN no proporcionado para editar.";
-            } else {
-                LibroManager manager = LibroManager.getInstance();
-                libroEditar = manager.buscarLibroPorISBN(isbnEditar);
-                
-                if (libroEditar == null) {
-                    errorMsg = "No se encontró el libro con ISBN: " + isbnEditar;
-                }
+                response.sendRedirect("list.jsp");
+                return;
             }
             
-            // Procesamiento del formulario
-            if ("POST".equalsIgnoreCase(request.getMethod()) && libroEditar != null) {
+            // Obtener el libro
+            LibroManager manager = LibroManager.getInstance();
+            libroAEditar = manager.getLibroPorISBN(isbnEditar);
+            
+            // Si no se encuentra el libro, redireccionar a la lista
+            if (libroAEditar == null) {
+                response.sendRedirect("list.jsp?error=libroNoEncontrado");
+                return;
+            }
+            
+            // Procesamiento del formulario cuando se envía
+            if ("POST".equalsIgnoreCase(request.getMethod())) {
                 try {
                     String isbn = request.getParameter("isbn");
                     String titulo = request.getParameter("titulo");
                     String autor = request.getParameter("autor");
                     String tipo = request.getParameter("tipo");
-                    String añoPublicacion = request.getParameter("añoPublicacion");
+                    String añoPublicacionStr = request.getParameter("anioPub");
                     
-                    // Validar datos
+                    // Validar datos básicos
                     if (isbn == null || isbn.trim().isEmpty()) {
                         errorMsg = "ISBN no puede estar vacío";
                         throw new Exception(errorMsg);
@@ -127,88 +143,81 @@
                         throw new Exception(errorMsg);
                     }
                     
-                    // Validar año de publicación
-                    try {
-                        if (añoPublicacion == null || añoPublicacion.trim().isEmpty()) {
-                            añoPublicacion = "Sin información";
-                        } else {
-                            int año = Integer.parseInt(añoPublicacion);
-                            int añoActual = new java.util.Date().getYear() + 1900;
-                            if (año < 1000 || año > añoActual) {
-                                errorMsg = "Año de publicación debe estar entre 1000 y " + añoActual;
-                                throw new Exception(errorMsg);
-                            }
+                    // Usar un valor predeterminado si no se recibe año
+                    int añoPublicacion = 2014; // Valor predeterminado
+                    
+                    if (añoPublicacionStr != null && !añoPublicacionStr.trim().isEmpty()) {
+                        try {
+                            añoPublicacion = Integer.parseInt(añoPublicacionStr.trim());
+                        } catch (NumberFormatException e) {
+                            errorMsg = "El año de publicación debe ser un número válido.";
+                            throw new Exception(errorMsg);
                         }
-                    } catch (NumberFormatException e) {
-                        errorMsg = "Año de publicación debe ser un número válido";
+                    }
+
+                    // Verificar rango del año
+                    int añoActual = Calendar.getInstance().get(Calendar.YEAR);
+                    if (añoPublicacion < 1000 || añoPublicacion > añoActual) {
+                        errorMsg = "El año de publicación debe estar entre 1000 y " + añoActual;
                         throw new Exception(errorMsg);
                     }
-                    
-                    // Obtener el gestor de libros
-                    LibroManager manager = LibroManager.getInstance();
-                    
-                    // Modificar el libro según su tipo
-                    if (libroEditar instanceof LibroFiccion && "Ficcion".equals(tipo)) {
-                        LibroFiccion libroFiccion = (LibroFiccion) libroEditar;
-                        
-                        libroFiccion.setTitulo(titulo);
-                        libroFiccion.setAutor(autor);
-                        libroFiccion.setAñoPublicacion(añoPublicacion);
-                        
+
+                    // Crear el libro según el tipo
+                    Libro libroActualizado = null;
+
+                    if ("Ficcion".equals(tipo)) {
                         String genero = request.getParameter("genero");
-                        if (genero != null && !genero.trim().isEmpty()) {
-                            libroFiccion.setGenero(genero);
+                        if (genero == null || genero.trim().isEmpty()) {
+                            genero = "Fantasía"; // Valor predeterminado
                         }
-                        
                         boolean esSerie = "true".equals(request.getParameter("esSerie"));
-                        libroFiccion.setEsSerie(esSerie);
-                        
-                    } else if (libroEditar instanceof LibroNoFiccion && "NoFiccion".equals(tipo)) {
-                        LibroNoFiccion libroNoFiccion = (LibroNoFiccion) libroEditar;
-                        
-                        libroNoFiccion.setTitulo(titulo);
-                        libroNoFiccion.setAutor(autor);
-                        libroNoFiccion.setAñoPublicacion(añoPublicacion);
-                        
+
+                        libroActualizado = new LibroFiccion(isbn, titulo, autor, añoPublicacion, genero, esSerie);
+                    } else if ("NoFiccion".equals(tipo)) {
                         String tema = request.getParameter("tema");
-                        if (tema != null && !tema.trim().isEmpty()) {
-                            libroNoFiccion.setTema(tema);
+                        if (tema == null || tema.trim().isEmpty()) {
+                            tema = "Ciencia"; // Valor predeterminado
                         }
-                        
                         String nivelAcademico = request.getParameter("nivelAcademico");
-                        if (nivelAcademico != null && !nivelAcademico.trim().isEmpty()) {
-                            libroNoFiccion.setNivelAcademico(nivelAcademico);
+                        if (nivelAcademico == null || nivelAcademico.trim().isEmpty()) {
+                            nivelAcademico = "Básico"; // Valor predeterminado
                         }
-                        
-                    } else if (libroEditar instanceof LibroReferencia && "Referencia".equals(tipo)) {
-                        LibroReferencia libroReferencia = (LibroReferencia) libroEditar;
-                        
-                        libroReferencia.setTitulo(titulo);
-                        libroReferencia.setAutor(autor);
-                        libroReferencia.setAñoPublicacion(añoPublicacion);
-                        
+                        libroActualizado = new LibroNoFiccion(isbn, titulo, autor, añoPublicacion, tema, nivelAcademico);
+                    } else if ("Referencia".equals(tipo)) {
                         String tipoReferencia = request.getParameter("tipoReferencia");
-                        if (tipoReferencia != null && !tipoReferencia.trim().isEmpty()) {
-                            libroReferencia.setTipoReferencia(tipoReferencia);
+                        if (tipoReferencia == null || tipoReferencia.trim().isEmpty()) {
+                            tipoReferencia = "Enciclopedia"; // Valor predeterminado
                         }
-                        
                         String actualizaciones = request.getParameter("actualizaciones");
-                        if (actualizaciones != null) {
-                            libroReferencia.setActualizaciones(actualizaciones);
+                        if (actualizaciones == null) {
+                            actualizaciones = "";
                         }
-                        
+
+                        libroActualizado = new LibroReferencia(isbn, titulo, autor, añoPublicacion, tipoReferencia, actualizaciones);
                     } else {
-                        errorMsg = "No se pudo editar el libro. El tipo seleccionado no coincide con el tipo original.";
+                        errorMsg = "No se pudo actualizar el libro. Tipo no reconocido: " + tipo;
                     }
-                    
-                    if (errorMsg == null) {
+
+                    // Actualizar el libro si se creó correctamente
+                    if (libroActualizado != null) {
+                        manager.actualizarLibro(libroActualizado);
                         response.sendRedirect("list.jsp?action=edit");
                         return;
                     }
-                    
+
                 } catch (Exception e) {
                     errorMsg = "Error: " + e.getMessage();
                 }
+            }
+            
+            // Determinar el tipo de libro
+            String tipoLibro = "";
+            if (libroAEditar instanceof LibroFiccion) {
+                tipoLibro = "Ficcion";
+            } else if (libroAEditar instanceof LibroNoFiccion) {
+                tipoLibro = "NoFiccion";
+            } else if (libroAEditar instanceof LibroReferencia) {
+                tipoLibro = "Referencia";
             }
         %>
         
@@ -223,129 +232,149 @@
                             <div class="alert alert-danger mb-3">
                                 <%= errorMsg %>
                             </div>
-                            <div class="text-center mt-3">
-                                <a href="list.jsp" class="btn btn-secondary">Volver a la lista</a>
+                        <% } %>
+                        <form id="libroForm" action="edit.jsp?isbn=<%= libroAEditar.getIsbn() %>" method="post" onsubmit="return validateForm();" accept-charset="UTF-8">
+                            <div class="mb-3">
+                                <label for="isbn" class="form-label">ISBN:</label>
+                                <input type="text" class="form-control" id="isbn" name="isbn" value="<%= libroAEditar.getIsbn() %>" readonly>
+                                <small class="text-muted">El ISBN no se puede modificar</small>
                             </div>
-                        <% } else if (libroEditar != null) { %>
-                            <form id="libroForm" action="edit.jsp" method="post" onsubmit="return validateForm();" accept-charset="UTF-8">
-                                <div class="mb-3">
-                                    <label for="isbn" class="form-label">ISBN:</label>
-                                    <input type="text" class="form-control" id="isbn" name="isbn" value="<%= libroEditar.getIsbn() %>" readonly>
-                                    <small class="text-muted">El ISBN no se puede modificar.</small>
-                                </div>
     
-                                <div class="mb-3">
-                                    <label for="titulo" class="form-label">Título:</label>
-                                    <input type="text" class="form-control" id="titulo" name="titulo" value="<%= libroEditar.getTitulo() %>" required>
-                                </div>
+                            <div class="mb-3">
+                                <label for="titulo" class="form-label">Título:</label>
+                                <input type="text" class="form-control" id="titulo" name="titulo" value="<%= libroAEditar.getTitulo() %>" required>
+                            </div>
     
-                                <div class="mb-3">
-                                    <label for="autor" class="form-label">Autor:</label>
-                                    <input type="text" class="form-control" id="autor" name="autor" value="<%= libroEditar.getAutor() %>" required>
-                                </div>
+                            <div class="mb-3">
+                                <label for="autor" class="form-label">Autor:</label>
+                                <input type="text" class="form-control" id="autor" name="autor" value="<%= libroAEditar.getAutor() %>" required>
+                            </div>
     
+                            <div class="mb-3">
+                                <label for="tipo" class="form-label">Tipo de libro:</label>
+                                <select class="form-control" id="tipo" name="tipo" required>
+                                    <option value="Ficcion" <%= "Ficcion".equals(tipoLibro) ? "selected" : "" %>>Ficcion</option>
+                                    <option value="NoFiccion" <%= "NoFiccion".equals(tipoLibro) ? "selected" : "" %>>NoFiccion</option>
+                                    <option value="Referencia" <%= "Referencia".equals(tipoLibro) ? "selected" : "" %>>Referencia</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="anioPub" class="form-label">Año de publicación:</label>
+                                <input type="text" class="form-control" id="anioPub" name="anioPub" 
+                                       value="<%= libroAEditar.getAñoPublicacion() %>" required>
+                                <small class="text-muted">Ingrese el año de publicación (entre 1000 y <%= Calendar.getInstance().get(Calendar.YEAR) %>)</small>
+                            </div>
+                            
+                            <!-- Campos específicos para Ficcion -->
+                            <div id="ficcionFields" style="display: none;">
+                                <h5 class="mt-3 mb-3">Información específica para Ficcion</h5>
+                                <%
+                                    String generoSeleccionado = "";
+                                    boolean esSerie = false;
+                                    if (libroAEditar instanceof LibroFiccion) {
+                                        LibroFiccion ficcion = (LibroFiccion)libroAEditar;
+                                        generoSeleccionado = ficcion.getGenero();
+                                        esSerie = ficcion.isEsSerie();
+                                    }
+                                %>
                                 <div class="mb-3">
-                                    <label for="tipo" class="form-label">Tipo de libro:</label>
-                                    <select class="form-control" id="tipo" name="tipo" required>
-                                        <option value="">Seleccione un tipo</option>
-                                        <option value="Ficcion" <%= libroEditar instanceof LibroFiccion ? "selected" : "" %>>Ficcion</option>
-                                        <option value="NoFiccion" <%= libroEditar instanceof LibroNoFiccion ? "selected" : "" %>>NoFiccion</option>
-                                        <option value="Referencia" <%= libroEditar instanceof LibroReferencia ? "selected" : "" %>>Referencia</option>
+                                    <label for="genero" class="form-label">Género:</label>
+                                    <select class="form-control" id="genero" name="genero">
+                                        <option value="Fantasía" <%= "Fantasía".equals(generoSeleccionado) ? "selected" : "" %>>Fantasía</option>
+                                        <option value="Ciencia Ficción" <%= "Ciencia Ficción".equals(generoSeleccionado) ? "selected" : "" %>>Ciencia Ficción</option>
+                                        <option value="Misterio" <%= "Misterio".equals(generoSeleccionado) ? "selected" : "" %>>Misterio</option>
+                                        <option value="Romance" <%= "Romance".equals(generoSeleccionado) ? "selected" : "" %>>Romance</option>
+                                        <option value="Aventura" <%= "Aventura".equals(generoSeleccionado) ? "selected" : "" %>>Aventura</option>
+                                        <option value="Terror" <%= "Terror".equals(generoSeleccionado) ? "selected" : "" %>>Terror</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-3 form-check">
+                                    <input type="checkbox" class="form-check-input" id="esSerie" name="esSerie" value="true" <%= esSerie ? "checked" : "" %>>
+                                    <label class="form-check-label" for="esSerie">¿Es parte de una serie?</label>
+                                </div>
+                            </div>
+                            
+                            <!-- Campos específicos para NoFiccion -->
+                            <div id="noFiccionFields" style="display: none;">
+                                <h5 class="mt-3 mb-3">Información específica para NoFiccion</h5>
+                                <%
+                                    String temaSeleccionado = "";
+                                    String nivelAcademicoSeleccionado = "";
+                                    if (libroAEditar instanceof LibroNoFiccion) {
+                                        LibroNoFiccion noFiccion = (LibroNoFiccion)libroAEditar;
+                                        temaSeleccionado = noFiccion.getTema();
+                                        nivelAcademicoSeleccionado = noFiccion.getNivelAcademico();
+                                    }
+                                %>
+                                <div class="mb-3">
+                                    <label for="tema" class="form-label">Tema:</label>
+                                    <select class="form-control" id="tema" name="tema">
+                                        <option value="Ciencia" <%= "Ciencia".equals(temaSeleccionado) ? "selected" : "" %>>Ciencia</option>
+                                        <option value="Historia" <%= "Historia".equals(temaSeleccionado) ? "selected" : "" %>>Historia</option>
+                                        <option value="Biografía" <%= "Biografía".equals(temaSeleccionado) ? "selected" : "" %>>Biografía</option>
+                                        <option value="Autoayuda" <%= "Autoayuda".equals(temaSeleccionado) ? "selected" : "" %>>Autoayuda</option>
+                                        <option value="Tecnología" <%= "Tecnología".equals(temaSeleccionado) ? "selected" : "" %>>Tecnología</option>
+                                        <option value="Filosofía" <%= "Filosofía".equals(temaSeleccionado) ? "selected" : "" %>>Filosofía</option>
                                     </select>
                                 </div>
                                 
                                 <div class="mb-3">
-                                    <label for="añoPublicacion" class="form-label">Año de publicación:</label>
-                                    <input type="number" class="form-control" id="añoPublicacion" name="añoPublicacion" 
-                                           value="<%= libroEditar.getAñoPublicacion().equals("Sin información") ? "2014" : libroEditar.getAñoPublicacion() %>" 
-                                           min="1000" max="<%= new java.util.Date().getYear() + 1900 %>" required>
-                                    <small class="text-muted">Ingrese el año de publicación (entre 1000 y <%= new java.util.Date().getYear() + 1900 %>)</small>
+                                    <label for="nivelAcademico" class="form-label">Nivel académico:</label>
+                                    <select class="form-control" id="nivelAcademico" name="nivelAcademico">
+                                        <option value="Básico" <%= "Básico".equals(nivelAcademicoSeleccionado) ? "selected" : "" %>>Básico</option>
+                                        <option value="Medio" <%= "Medio".equals(nivelAcademicoSeleccionado) ? "selected" : "" %>>Medio</option>
+                                        <option value="Superior" <%= "Superior".equals(nivelAcademicoSeleccionado) ? "selected" : "" %>>Superior</option>
+                                        <option value="Especializado" <%= "Especializado".equals(nivelAcademicoSeleccionado) ? "selected" : "" %>>Especializado</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <!-- Campos específicos para Referencia -->
+                            <div id="referenciaFields" style="display: none;">
+                                <h5 class="mt-3 mb-3">Información específica para Referencia</h5>
+                                <%
+                                    String tipoReferenciaSeleccionado = "";
+                                    String actualizaciones = "";
+                                    if (libroAEditar instanceof LibroReferencia) {
+                                        LibroReferencia referencia = (LibroReferencia)libroAEditar;
+                                        tipoReferenciaSeleccionado = referencia.getTipoReferencia();
+                                        actualizaciones = referencia.getActualizaciones();
+                                    }
+                                %>
+                                <div class="mb-3">
+                                    <label for="tipoReferencia" class="form-label">Tipo de referencia:</label>
+                                    <select class="form-control" id="tipoReferencia" name="tipoReferencia">
+                                        <option value="Enciclopedia" <%= "Enciclopedia".equals(tipoReferenciaSeleccionado) ? "selected" : "" %>>Enciclopedia</option>
+                                        <option value="Diccionario" <%= "Diccionario".equals(tipoReferenciaSeleccionado) ? "selected" : "" %>>Diccionario</option>
+                                        <option value="Manual" <%= "Manual".equals(tipoReferenciaSeleccionado) ? "selected" : "" %>>Manual</option>
+                                        <option value="Atlas" <%= "Atlas".equals(tipoReferenciaSeleccionado) ? "selected" : "" %>>Atlas</option>
+                                        <option value="Guía" <%= "Guía".equals(tipoReferenciaSeleccionado) ? "selected" : "" %>>Guía</option>
+                                    </select>
                                 </div>
                                 
-                                <!-- Campos específicos para Ficcion -->
-                                <div id="ficcionFields" style="display: none;">
-                                    <h5 class="mt-3 mb-3">Información específica para Ficcion</h5>
-                                    <div class="mb-3">
-                                        <label for="genero" class="form-label">Género:</label>
-                                        <select class="form-control" id="genero" name="genero">
-                                            <option value="Fantasía" <%= (libroEditar instanceof LibroFiccion && "Fantasía".equals(((LibroFiccion)libroEditar).getGenero())) ? "selected" : "" %>>Fantasía</option>
-                                            <option value="Ciencia Ficción" <%= (libroEditar instanceof LibroFiccion && "Ciencia Ficción".equals(((LibroFiccion)libroEditar).getGenero())) ? "selected" : "" %>>Ciencia Ficción</option>
-                                            <option value="Misterio" <%= (libroEditar instanceof LibroFiccion && "Misterio".equals(((LibroFiccion)libroEditar).getGenero())) ? "selected" : "" %>>Misterio</option>
-                                            <option value="Romance" <%= (libroEditar instanceof LibroFiccion && "Romance".equals(((LibroFiccion)libroEditar).getGenero())) ? "selected" : "" %>>Romance</option>
-                                            <option value="Aventura" <%= (libroEditar instanceof LibroFiccion && "Aventura".equals(((LibroFiccion)libroEditar).getGenero())) ? "selected" : "" %>>Aventura</option>
-                                            <option value="Terror" <%= (libroEditar instanceof LibroFiccion && "Terror".equals(((LibroFiccion)libroEditar).getGenero())) ? "selected" : "" %>>Terror</option>
-                                        </select>
-                                    </div>
-                                    
-                                    <div class="mb-3 form-check">
-                                        <input type="checkbox" class="form-check-input" id="esSerie" name="esSerie" value="true" <%= (libroEditar instanceof LibroFiccion && ((LibroFiccion)libroEditar).isEsSerie()) ? "checked" : "" %>>
-                                        <label class="form-check-label" for="esSerie">¿Es parte de una serie?</label>
-                                    </div>
+                                <div class="mb-3">
+                                    <label for="actualizaciones" class="form-label">Actualizaciones:</label>
+                                    <input type="text" class="form-control" id="actualizaciones" name="actualizaciones" 
+                                           value="<%= actualizaciones %>" placeholder="Ej: Edición 2023, Revisión 5">
                                 </div>
-                                
-                                <!-- Campos específicos para NoFiccion -->
-                                <div id="noFiccionFields" style="display: none;">
-                                    <h5 class="mt-3 mb-3">Información específica para NoFiccion</h5>
-                                    <div class="mb-3">
-                                        <label for="tema" class="form-label">Tema:</label>
-                                        <select class="form-control" id="tema" name="tema">
-                                            <option value="Ciencia" <%= (libroEditar instanceof LibroNoFiccion && "Ciencia".equals(((LibroNoFiccion)libroEditar).getTema())) ? "selected" : "" %>>Ciencia</option>
-                                            <option value="Historia" <%= (libroEditar instanceof LibroNoFiccion && "Historia".equals(((LibroNoFiccion)libroEditar).getTema())) ? "selected" : "" %>>Historia</option>
-                                            <option value="Biografía" <%= (libroEditar instanceof LibroNoFiccion && "Biografía".equals(((LibroNoFiccion)libroEditar).getTema())) ? "selected" : "" %>>Biografía</option>
-                                            <option value="Autoayuda" <%= (libroEditar instanceof LibroNoFiccion && "Autoayuda".equals(((LibroNoFiccion)libroEditar).getTema())) ? "selected" : "" %>>Autoayuda</option>
-                                            <option value="Tecnología" <%= (libroEditar instanceof LibroNoFiccion && "Tecnología".equals(((LibroNoFiccion)libroEditar).getTema())) ? "selected" : "" %>>Tecnología</option>
-                                            <option value="Filosofía" <%= (libroEditar instanceof LibroNoFiccion && "Filosofía".equals(((LibroNoFiccion)libroEditar).getTema())) ? "selected" : "" %>>Filosofía</option>
-                                        </select>
-                                    </div>
-                                    
-                                    <div class="mb-3">
-                                        <label for="nivelAcademico" class="form-label">Nivel académico:</label>
-                                        <select class="form-control" id="nivelAcademico" name="nivelAcademico">
-                                            <option value="Básico" <%= (libroEditar instanceof LibroNoFiccion && "Básico".equals(((LibroNoFiccion)libroEditar).getNivelAcademico())) ? "selected" : "" %>>Básico</option>
-                                            <option value="Medio" <%= (libroEditar instanceof LibroNoFiccion && "Medio".equals(((LibroNoFiccion)libroEditar).getNivelAcademico())) ? "selected" : "" %>>Medio</option>
-                                            <option value="Superior" <%= (libroEditar instanceof LibroNoFiccion && "Superior".equals(((LibroNoFiccion)libroEditar).getNivelAcademico())) ? "selected" : "" %>>Superior</option>
-                                            <option value="Especializado" <%= (libroEditar instanceof LibroNoFiccion && "Especializado".equals(((LibroNoFiccion)libroEditar).getNivelAcademico())) ? "selected" : "" %>>Especializado</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                
-                                <!-- Campos específicos para Referencia -->
-                                <div id="referenciaFields" style="display: none;">
-                                    <h5 class="mt-3 mb-3">Información específica para Referencia</h5>
-                                    <div class="mb-3">
-                                        <label for="tipoReferencia" class="form-label">Tipo de referencia:</label>
-                                        <select class="form-control" id="tipoReferencia" name="tipoReferencia">
-                                            <option value="Enciclopedia" <%= (libroEditar instanceof LibroReferencia && "Enciclopedia".equals(((LibroReferencia)libroEditar).getTipoReferencia())) ? "selected" : "" %>>Enciclopedia</option>
-                                            <option value="Diccionario" <%= (libroEditar instanceof LibroReferencia && "Diccionario".equals(((LibroReferencia)libroEditar).getTipoReferencia())) ? "selected" : "" %>>Diccionario</option>
-                                            <option value="Manual" <%= (libroEditar instanceof LibroReferencia && "Manual".equals(((LibroReferencia)libroEditar).getTipoReferencia())) ? "selected" : "" %>>Manual</option>
-                                            <option value="Atlas" <%= (libroEditar instanceof LibroReferencia && "Atlas".equals(((LibroReferencia)libroEditar).getTipoReferencia())) ? "selected" : "" %>>Atlas</option>
-                                            <option value="Guía" <%= (libroEditar instanceof LibroReferencia && "Guía".equals(((LibroReferencia)libroEditar).getTipoReferencia())) ? "selected" : "" %>>Guía</option>
-                                        </select>
-                                    </div>
-                                    
-                                    <div class="mb-3">
-                                        <label for="actualizaciones" class="form-label">Actualizaciones:</label>
-                                        <input type="text" class="form-control" id="actualizaciones" name="actualizaciones" 
-                                               value="<%= (libroEditar instanceof LibroReferencia) ? ((LibroReferencia)libroEditar).getActualizaciones() : "" %>" 
-                                               placeholder="Ej: Edición 2023, Revisión 5">
-                                    </div>
-                                </div>
+                            </div>
     
-                                <div class="text-center mt-4">
-                                    <button type="submit" class="btn btn-primary">Guardar cambios</button>
-                                    <a href="list.jsp" class="btn btn-secondary">Cancelar</a>
-                                </div>
-                            </form>
-                        <% } %>
+                            <div class="text-center mt-4">
+                                <button type="submit" class="btn btn-primary">Actualizar</button>
+                                <a href="list.jsp" class="btn btn-secondary">Cancelar</a>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
 
             <div class="col-md-6 text-center">
-                <img src="../img/edit-book.png" alt="Imagen de edición de libro" class="img-fluid rounded" style="max-height: 350px;">
+                <img src="../img/book-edit.png" alt="Imagen de libro" class="img-fluid rounded" style="max-height: 350px;">
                 <div class="mt-3">
-                    <p class="text-muted">Realice los cambios necesarios en la información del libro.</p>
-                    <p class="text-muted">El ISBN no puede ser modificado ya que es el identificador único del libro.</p>
+                    <p class="text-muted">Modifique los campos del libro que desea actualizar.</p>
+                    <p class="text-muted">Tenga en cuenta que el ISBN no se puede modificar.</p>
                 </div>
             </div>
         </div>

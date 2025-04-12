@@ -5,20 +5,15 @@ public abstract class Libro {
     private String titulo;
     private String autor;
     private String tipo;
-    private String añoPublicacion;
+    private int añoPublicacion;
     private boolean disponible;
 
-    public Libro(String isbn, String titulo, String autor, String tipo, String añoPublicacion) {
+    public Libro(String isbn, String titulo, String autor, String tipo, int añoPublicacion) {
         this.isbn = isbn;
         this.titulo = titulo;
         this.autor = autor;
         this.tipo = tipo;
-        // Validamos que el año no sea nulo ni vacío
-        if (añoPublicacion != null && !añoPublicacion.trim().isEmpty()) {
-            this.añoPublicacion = añoPublicacion.trim();
-        } else {
-            this.añoPublicacion = "Sin información";
-        }
+        this.añoPublicacion = añoPublicacion;
         this.disponible = true; // Por defecto, el libro está disponible
     }
 
@@ -54,17 +49,12 @@ public abstract class Libro {
         this.tipo = tipo;
     }
 
-    public String getAñoPublicacion() {
+    public int getAñoPublicacion() {
         return añoPublicacion;
     }
 
-    public void setAñoPublicacion(String añoPublicacion) {
-        // Validamos que el año no sea nulo ni vacío
-        if (añoPublicacion != null && !añoPublicacion.trim().isEmpty()) {
-            this.añoPublicacion = añoPublicacion.trim();
-        } else {
-            this.añoPublicacion = "Sin información";
-        }
+    public void setAñoPublicacion(int añoPublicacion) {
+        this.añoPublicacion = añoPublicacion;
     }
 
     public boolean isDisponible() {

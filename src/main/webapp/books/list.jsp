@@ -192,13 +192,7 @@
                                     <td><%= libro.getTitulo() %></td>
                                     <td><%= libro.getAutor() %></td>  
                                     <td><%= libro.getTipo() %></td>
-                                    <td class="text-center">
-                                        <% if (libro.getAñoPublicacion() != null && !libro.getAñoPublicacion().equals("Sin información") && !libro.getAñoPublicacion().equals("null")) { %>
-                                            <%= libro.getAñoPublicacion() %>
-                                        <% } else { %>
-                                            <span class="text-muted">Sin información</span>
-                                        <% } %>
-                                    </td>
+                                    <td><%= libro.getAñoPublicacion()%></td>
                                     <td>
                                         <% if (libro.isDisponible()) { %>
                                             <span class="badge bg-success">Disponible</span>

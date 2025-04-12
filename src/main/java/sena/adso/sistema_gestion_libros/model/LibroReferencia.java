@@ -4,7 +4,7 @@ public class LibroReferencia extends Libro {
     private String tipoReferencia; // enciclopedia, diccionario, manual, etc.
     private String actualizaciones; // última edición, revisiones, año, etc.
 
-    public LibroReferencia(String isbn, String titulo, String autor, String añoPublicacion, String tipoReferencia, String actualizaciones) {
+    public LibroReferencia(String isbn, String titulo, String autor, int añoPublicacion, String tipoReferencia, String actualizaciones) {
         super(isbn, titulo, autor, "Referencia", añoPublicacion);
         this.tipoReferencia = tipoReferencia != null ? tipoReferencia : "Enciclopedia";
         this.actualizaciones = actualizaciones != null ? actualizaciones : "";
