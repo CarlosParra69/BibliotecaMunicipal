@@ -115,7 +115,7 @@
                                         <strong>Estado del libro al devolverlo:</strong> 
                                         <% if (prestamo.getEstadoDevolucion().equalsIgnoreCase("bueno")) { %>
                                             <span class="badge bg-success">Bueno</span>
-                                        <% } else if (prestamo.getEstadoDevolucion().equalsIgnoreCase("dañado")) { %>
+                                        <% } else if (prestamo.getEstadoDevolucion().equalsIgnoreCase("danado")) { %>
                                             <span class="badge bg-warning">Dañado</span>
                                         <% } else if (prestamo.getEstadoDevolucion().equalsIgnoreCase("perdido")) { %>
                                             <span class="badge bg-danger">Perdido</span>
