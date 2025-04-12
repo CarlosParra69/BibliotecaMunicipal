@@ -110,8 +110,8 @@
         <script src="https://cdn.botpress.cloud/webchat/v2.3/inject.js"></script>
         <script src="https://files.bpcontent.cloud/2025/04/08/01/20250408014526-SGBBVDT9.js"></script>
         <header>
-            <h1>Biblioteca</h1>
-            <p>Gestión de Libros</p>
+            <h1>Gestión de Libros</h1>
+            <i class="text-muted">Historias que hablan como tú, de un mundo como el tuyo.</i>
         </header>
 
         <nav class="text-center">

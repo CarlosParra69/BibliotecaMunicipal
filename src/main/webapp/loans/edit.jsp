@@ -27,8 +27,8 @@
     <script src="https://cdn.botpress.cloud/webchat/v2.3/inject.js"></script>
     <script src="https://files.bpcontent.cloud/2025/04/08/01/20250408014526-SGBBVDT9.js"></script>
     <header>
-        <h1>Biblioteca</h1>
-        <p>Editar Préstamo</p>
+        <h1>Editar el Prestamo</h1>
+        <i class="text-muted">En tiempos de cambio, las palabras son nuestra revolución más silenciosa.</i>
     </header>
 
     <nav class="text-center">
@@ -88,7 +88,7 @@
 
                 <div class="card">
                     <div class="card-header bg-warning text-dark">
-                        <h3 class="mb-0">Editar Préstamo #<%= prestamo.getId() %></h3>
+                        <h3 class="mb-0">Editar Préstamo Id: <%= prestamo.getId() %></h3>
                     </div>
                     <div class="card-body">
                         <form action="edit.jsp" method="post" onsubmit="return validateForm();">

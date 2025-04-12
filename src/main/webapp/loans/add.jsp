@@ -38,8 +38,8 @@
     <script src="https://cdn.botpress.cloud/webchat/v2.3/inject.js"></script>
     <script src="https://files.bpcontent.cloud/2025/04/08/01/20250408014526-SGBBVDT9.js"></script>
     <header>
-        <h1>Biblioteca</h1>
-        <p>Agregar Nuevo Préstamo</p>
+        <h1>Registro de Prestamos</h1>
+        <i class="text-muted">La realidad no siempre se entiende en noticias: a veces solo en novelas.</i>
     </header>
 
     <nav class="text-center">

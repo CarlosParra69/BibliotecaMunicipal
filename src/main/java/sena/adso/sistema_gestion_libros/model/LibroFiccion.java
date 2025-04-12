@@ -6,7 +6,7 @@ public class LibroFiccion extends Libro {
 
     public LibroFiccion(String isbn, String titulo, String autor, int añoPublicacion, String genero, boolean esSerie) {
         super(isbn, titulo, autor, "Ficcion", añoPublicacion);
-        this.genero = genero != null ? genero : "Fantasía";
+        this.genero = genero != null ? genero : "Fantasia";
         this.esSerie = esSerie;
     }
 
@@ -15,7 +15,7 @@ public class LibroFiccion extends Libro {
     }
 
     public void setGenero(String genero) {
-        this.genero = genero != null ? genero : "Fantasía";
+        this.genero = genero != null ? genero : "Fantasia";
     }
 
     public boolean isEsSerie() {
@@ -34,7 +34,7 @@ public class LibroFiccion extends Libro {
 
     @Override
     public String toString() {
-        return super.toString() + ", Género: " + genero +
+        return super.toString() + ", Genero: " + genero +
                ", Parte de una serie: " + (esSerie ? "Sí" : "No");
     }
 }

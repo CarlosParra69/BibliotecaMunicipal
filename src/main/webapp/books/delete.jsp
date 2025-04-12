@@ -18,8 +18,8 @@
     <script src="https://cdn.botpress.cloud/webchat/v2.3/inject.js"></script>
     <script src="https://files.bpcontent.cloud/2025/04/08/01/20250408014526-SGBBVDT9.js"></script>
     <header>
-        <h1>Biblioteca</h1>
-        <p>Eliminar Libro</p>
+        <h1>Eliminar Libro</h1>
+        <p class="text-muted">Vivimos tiempos complejos, por eso leemos historias valientes.</p>
     </header>
 
     <nav class="text-center">

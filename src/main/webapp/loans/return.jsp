@@ -22,8 +22,8 @@
     <script src="https://cdn.botpress.cloud/webchat/v2.3/inject.js"></script>
     <script src="https://files.bpcontent.cloud/2025/04/08/01/20250408014526-SGBBVDT9.js"></script>
     <header>
-        <h1>Biblioteca</h1>
-        <p>Devolución de Libro</p>
+        <h1>Devoluciones</h1>
+        <i class="text-muted">En un mundo que cambia, las palabras también se rebelan.</i>
     </header>
 
     <nav class="text-center">

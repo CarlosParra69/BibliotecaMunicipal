@@ -133,9 +133,9 @@ public class Loan {
         return "Préstamo ID: " + id +
                 "\nLibro: " + libro.getTitulo() +
                 "\nPrestatario: " + nombrePrestatario + " (" + idPrestatario + ")" +
-                "\nFecha del préstamo: " + formatoFecha.format(fechaPrestamo) +
-                "\nFecha límite: " + formatoFecha.format(fechaLimite) +
-                "\nFecha de devolución: " + (fechaDevolucion != null ? formatoFecha.format(fechaDevolucion) : "No devuelto") +
+                "\nFecha del prestamo: " + formatoFecha.format(fechaPrestamo) +
+                "\nFecha limite: " + formatoFecha.format(fechaLimite) +
+                "\nFecha de devolucion: " + (fechaDevolucion != null ? formatoFecha.format(fechaDevolucion) : "No devuelto") +
                 "\nEstado: " + (isActivo() ? (estaVencido() ? "Vencido" : "Activo") : "Devuelto");
     }
 }

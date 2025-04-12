@@ -113,8 +113,8 @@
     <script src="https://cdn.botpress.cloud/webchat/v2.3/inject.js"></script>
     <script src="https://files.bpcontent.cloud/2025/04/08/01/20250408014526-SGBBVDT9.js"></script>
     <header>
-        <h1>Biblioteca</h1>
-        <p>Gestión de Préstamos</p>
+        <h1>Gestion de Prestamos</h1>
+        <i class="text-muted">Lee lo que el mundo siente, escribe lo que el mundo calla.</i>
     </header>
 
     <nav class="text-center">
@@ -219,10 +219,7 @@
                     </div>
                 </div>
             </div>
-        </div>
-
-        <h2>Lista de Préstamos</h2>
-        
+        </div>            
         <% if (todosLosPrestamos.isEmpty()) { %>
             <div class="alert alert-warning">
                 <p>No hay préstamos registrados en el sistema.</p>

@@ -8,7 +8,7 @@ public class LibroNoFiccion extends Libro {
     public LibroNoFiccion(String isbn, String titulo, String autor, int añoPublicacion, String tema, String nivelAcademico) {
         super(isbn, titulo, autor, "NoFiccion", añoPublicacion);
         this.tema = tema != null ? tema : "Ciencia";
-        this.nivelAcademico = nivelAcademico != null ? nivelAcademico : "Básico";
+        this.nivelAcademico = nivelAcademico != null ? nivelAcademico : "Basico";
     }
 
     public String getTema() {
@@ -24,7 +24,7 @@ public class LibroNoFiccion extends Libro {
     }
 
     public void setNivelAcademico(String nivelAcademico) {
-        this.nivelAcademico = nivelAcademico != null ? nivelAcademico : "Básico";
+        this.nivelAcademico = nivelAcademico != null ? nivelAcademico : "Basico";
     }
 
     @Override
@@ -36,6 +36,6 @@ public class LibroNoFiccion extends Libro {
     @Override
     public String toString() {
         return super.toString() + ", Tema: " + tema +
-               ", Nivel académico: " + nivelAcademico;
+               ", Nivel academico: " + nivelAcademico;
     }
 }

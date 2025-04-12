@@ -87,8 +87,8 @@
         <script src="https://cdn.botpress.cloud/webchat/v2.3/inject.js"></script>
         <script src="https://files.bpcontent.cloud/2025/04/08/01/20250408014526-SGBBVDT9.js"></script>
         <header>
-            <h1>Biblioteca</h1>
-            <p>Agregar Nuevo Libro</p>
+            <h1>Agregar Nuevo Libro</h1>
+            <i class="text-muted">La literatura de nuestro tiempo: un faro en la tormenta.</i>
         </header>
 
         <nav class="text-center">

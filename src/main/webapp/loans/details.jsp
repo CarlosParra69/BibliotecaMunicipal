@@ -21,8 +21,8 @@
     <script src="https://cdn.botpress.cloud/webchat/v2.3/inject.js"></script>
     <script src="https://files.bpcontent.cloud/2025/04/08/01/20250408014526-SGBBVDT9.js"></script>
     <header>
-        <h1>Biblioteca</h1>
-        <p>Detalles del Préstamo</p>
+        <h1>Detalles del Prestamo</h1>
+        <i class="text-muted">Entre crisis y conexiones, la literatura narra lo que somos hoy.</i>
     </header>
 
     <nav class="text-center">
@@ -87,7 +87,7 @@
             <div class="col-md-8 offset-md-2">
                 <div class="card">
                     <div class="card-header bg-primary text-white">
-                        <h3 class="mb-0">Detalles del Préstamo #<%= prestamo.getId() %></h3>
+                        <h3 class="mb-0">Detalles del Préstamo Id: <%= prestamo.getId() %></h3>
                     </div>
                     <div class="card-body">
                         <div class="row mb-4">

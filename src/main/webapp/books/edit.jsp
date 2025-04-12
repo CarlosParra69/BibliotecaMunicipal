@@ -82,8 +82,8 @@
     <script src="https://cdn.botpress.cloud/webchat/v2.3/inject.js"></script>
     <script src="https://files.bpcontent.cloud/2025/04/08/01/20250408014526-SGBBVDT9.js"></script>
     <header>
-        <h1>Biblioteca</h1>
-        <p>Editar Libro</p>
+        <h1>Editar Libro</h1>
+        <i class="text-muted">Leer el presente para entender el futuro.</i>
     </header>
 
     <nav class="text-center">
@@ -371,7 +371,7 @@
             </div>
 
             <div class="col-md-6 text-center">
-                <img src="../img/book-edit.png" alt="Imagen de libro" class="img-fluid rounded" style="max-height: 350px;">
+                <img src="../img/book.png" alt="Imagen de libro" class="img-fluid rounded" style="max-height: 350px;">
                 <div class="mt-3">
                     <p class="text-muted">Modifique los campos del libro que desea actualizar.</p>
                     <p class="text-muted">Tenga en cuenta que el ISBN no se puede modificar.</p>
