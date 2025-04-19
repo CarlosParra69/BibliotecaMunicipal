@@ -1,3 +1,5 @@
+/* global Swal */
+
 /**
  * Utilidades para SweetAlert2 con soporte para tema claro/oscuro
  */

@@ -188,8 +188,8 @@
             <div class="hero-section animate__animated animate__fadeIn">
                 <div class="row align-items-center hero-content">
                     <div class="col-lg-7">
-                        <h1 class="display-4 fw-bold mb-3">Sistema de Gestión de Biblioteca</h1>
-                        <p class="lead mb-4">Una solución completa para administrar su biblioteca de manera eficiente y organizada.</p>
+                        <h1 class="display-4 fw-bold mb-3">Biblioteca Municipal De Miraflores</h1>
+                        <p class="lead mb-4">Bienvenido al sistema de gestion de bilioteca.</p>
                         <div class="d-flex flex-wrap gap-2">
                             <a href="books/list.jsp" class="btn btn-light btn-lg px-4 me-md-2">
                                 <i class="bi bi-book me-2"></i>Explorar Libros
@@ -358,8 +358,8 @@
                         </ul>
                         <div class="mt-3">
                             <h4 class="mb-3">Contacto</h4>
-                            <p><i class="bi bi-envelope me-2"></i> biblioteca@ejemplo.com</p>
-                            <p><i class="bi bi-telephone me-2"></i> (123) 456-7890</p>
+                            <p><i class="bi bi-envelope me-2"></i> bibliotecamiraflores25@gmail.com</p>
+                            <p><i class="bi bi-telephone me-2"></i>+57 3103915561</p>
                         </div>
                     </div>
                 </div>
@@ -392,7 +392,7 @@
                     </div>
                 </div>
                 <hr style="border-color: var(--table-border);">
-                <p class="text-center">&copy; 2025 Biblioteca - Sistema de Gestión de Libros</p>
+                <p class="text-center">&copy; 2025 Biblioteca Municipal De Miraflores - Sistema de Gestión</p>
             </div>
         </footer>
         

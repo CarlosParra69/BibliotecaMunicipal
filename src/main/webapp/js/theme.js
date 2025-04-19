@@ -1,3 +1,5 @@
+/* global Swal */
+
 // Función para establecer el tema
 function setTheme(theme) {
     document.documentElement.setAttribute('data-theme', theme);

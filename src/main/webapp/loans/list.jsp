@@ -287,7 +287,7 @@
     </div>
 
     <footer>
-        <p>&copy; 2025 Sistema de Biblioteca</p>
+        <p>&copy; 2025 Biblioteca Municipal De Miraflores - Sistema de Gestión</p>
     </footer>
 </body>
 </html>
