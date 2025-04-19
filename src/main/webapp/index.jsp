@@ -153,36 +153,7 @@
     </head>
     <body>
         <script src="https://cdn.botpress.cloud/webchat/v2.3/inject.js"></script>
-        <script src="https://files.bpcontent.cloud/2025/04/08/01/20250408014526-SGBBVDT9.js"></script>
-        
-        <!-- Navbar mejorado -->
-        <nav class="navbar navbar-expand-lg" style="background-color: var(--header-bg); border-radius: 0 0 15px 15px; margin-bottom: 2rem; box-shadow: 0 4px 10px var(--shadow-color);">
-            <div class="container">
-                <a class="navbar-brand d-flex align-items-center" href="index.jsp" style="color: var(--header-text);">
-                    <i class="bi bi-book me-2" style="font-size: 1.5rem;"></i>
-                    <span class="fw-bold">Biblioteca</span>
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
-                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"
-                        style="border-color: var(--header-text); color: var(--header-text);">
-                    <i class="bi bi-list" style="color: var(--header-text);"></i>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="index.jsp" style="color: var(--header-text);">Inicio</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="books/list.jsp" style="color: var(--header-text);">Libros</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="loans/list.jsp" style="color: var(--header-text);">Préstamos</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-
+        <script src="https://files.bpcontent.cloud/2025/04/08/01/20250408014526-SGBBVDT9.js"></script>            
         <div class="container">
             <!-- Hero Section -->
             <div class="hero-section animate__animated animate__fadeIn">
@@ -359,7 +330,7 @@
                         <div class="mt-3">
                             <h4 class="mb-3">Contacto</h4>
                             <p><i class="bi bi-envelope me-2"></i> bibliotecamiraflores25@gmail.com</p>
-                            <p><i class="bi bi-telephone me-2"></i>+57 3103915561</p>
+                            <p><i class="bi bi-telephone me-2"></i>+573103915561</p>
                         </div>
                     </div>
                 </div>
@@ -384,10 +355,11 @@
                     </div>
                     <div class="col-md-4">
                         <h5>Síguenos</h5>
-                        <div class="d-flex gap-3 fs-4">
+                        <div class="align-items-center fs-4">
                             <a href="#" style="color: var(--nav-link);"><i class="bi bi-facebook"></i></a>
                             <a href="#" style="color: var(--nav-link);"><i class="bi bi-twitter"></i></a>
                             <a href="#" style="color: var(--nav-link);"><i class="bi bi-instagram"></i></a>
+                            <a href="#" style="color: var(--nav-link);"><i class="bi bi-whatsapp"></i></a>
                         </div>
                     </div>
                 </div>
