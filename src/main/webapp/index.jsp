@@ -301,8 +301,8 @@
                         <div class="d-flex align-items-center">
                             <i class="bi bi-person-circle me-2" style="font-size: 2rem;"></i>
                             <div>
-                                <h5 class="mb-0">María González</h5>
-                                <small>Bibliotecaria</small>
+                                <h5 class="mb-0">Carlos Parra</h5>
+                                <small>Bibliotecario</small>
                             </div>
                         </div>
                     </div>
@@ -313,7 +313,7 @@
                         <div class="d-flex align-items-center">
                             <i class="bi bi-person-circle me-2" style="font-size: 2rem;"></i>
                             <div>
-                                <h5 class="mb-0">Carlos Rodríguez</h5>
+                                <h5 class="mb-0">Gustavo Petro</h5>
                                 <small>Director de Biblioteca</small>
                             </div>
                         </div>
