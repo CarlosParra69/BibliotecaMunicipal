@@ -1,14 +1,12 @@
-# Usa la imagen oficial de Tomcat
+# Etapa 1: Construcción con Maven
+FROM maven:3.8.7-eclipse-temurin-17 AS builder
+WORKDIR /app
+COPY . .
+RUN mvn clean package -DskipTests
+
+# Etapa 2: Servidor Tomcat con el WAR generado
 FROM tomcat:9.0
-
-# Borra las apps por defecto de Tomcat
 RUN rm -rf /usr/local/tomcat/webapps/*
-
-# Copia tu archivo WAR al directorio webapps y lo nombra ROOT.war para que sea la app principal
-COPY target/Sistema_gestion_libros-1.0.war /usr/local/tomcat/webapps/ROOT.war
-
-# Expone el puerto por defecto de Tomcat
+COPY --from=builder /app/target/Sistema_gestion_libros-1.0.war /usr/local/tomcat/webapps/ROOT.war
 EXPOSE 8080
-
-# Comando para ejecutar Tomcat
 CMD ["catalina.sh", "run"]
