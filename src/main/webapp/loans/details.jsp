@@ -173,10 +173,7 @@
                                         <p><strong>Descripción:</strong> <%= libro.getDescripcion() %></p>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="text-center mt-4">
-                                <img src="../img/details.png" alt="Imagen de préstamo" class="img-fluid rounded" style="max-width: 300px;">
-                            </div>
+                            </div>                            
                             <br>
                         </div>
                         
