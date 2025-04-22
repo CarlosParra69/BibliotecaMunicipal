@@ -160,7 +160,7 @@
                 <div class="row align-items-center hero-content">
                     <div class="col-lg-7">
                         <h1 class="display-4 fw-bold mb-3">Biblioteca Municipal De Miraflores</h1>
-                        <p class="lead mb-4">Bienvenido al sistema de gestion de bilioteca.</p>
+                        <p class="lead mb-4">Bienvenido al sistema de gestion de biblioteca.</p>
                         <div class="d-flex flex-wrap gap-2">
                             <a href="books/list.jsp" class="btn btn-light btn-lg px-4 me-md-2">
                                 <i class="bi bi-book me-2"></i>Explorar Libros
