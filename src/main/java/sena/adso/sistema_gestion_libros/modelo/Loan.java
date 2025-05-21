@@ -1,4 +1,4 @@
-package sena.adso.sistema_gestion_libros.model;
+package sena.adso.sistema_gestion_libros.modelo;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

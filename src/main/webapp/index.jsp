@@ -284,7 +284,7 @@
                         <div class="d-flex align-items-center">
                             <i class="bi bi-person-circle me-2" style="font-size: 2rem;"></i>
                             <div>
-                                <h5 class="mb-0">Gustavo Petro</h5>
+                                <h5 class="mb-0">Fernando Soler</h5>
                                 <small>Director de Biblioteca</small>
                             </div>
                         </div>

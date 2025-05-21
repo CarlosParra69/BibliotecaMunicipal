@@ -1,7 +1,8 @@
-<%@page import="sena.adso.sistema_gestion_libros.model.*"%>
+<%@page import="sena.adso.sistema_gestion_libros.modelo.*"%>
 <%@page import="java.io.*"%>
-<%@page import="java.lang.*"%>
 <%@page import="java.util.*"%>
+<%@page import="java.util.Enumeration"%>
+<%@page import="java.util.Calendar"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -44,19 +45,16 @@
                 var tipo = document.getElementById('tipo').value;
                 var añoPublicacion = document.getElementById('anioPub').value;
                 
-                // Solo verificar que título, autor y tipo estén completos
                 if (!isbn || !titulo || !autor || !tipo) {
                     showErrorAlert('Campos incompletos', 'Por favor complete los campos obligatorios: ISBN, Título, Autor y Tipo.');
                     return false;
                 }
                 
-                // Validación básica del ISBN - solo verificar que tenga algún valor
                 if (isbn.trim() === '') {
                     showErrorAlert('ISBN requerido', 'Por favor ingrese un ISBN.');
                     return false;
                 }
                 
-                // Validar año de publicación - verificar que no esté vacío y sea un número válido
                 if (añoPublicacion.trim() === '') {
                     showErrorAlert('Año de publicación requerido', 'Por favor ingrese un año de publicación.');
                     return false;
@@ -103,7 +101,6 @@
             <%
                 String errorMsg = null;
 
-                // Procesamiento del formulario
                 if ("POST".equalsIgnoreCase(request.getMethod())) {
                     try {
                         String isbn = request.getParameter("isbn");
@@ -112,19 +109,20 @@
                         String tipo = request.getParameter("tipo");
                         String añoPublicacionStr = request.getParameter("anioPub");
                         
-                        // Depuración extendida
-                        System.out.println("=== DEBUG INFORMACIÓN DE FORMULARIO ===");
-                        System.out.println("isbn: " + isbn);
-                        System.out.println("titulo: " + titulo);
-                        System.out.println("autor: " + autor);
-                        System.out.println("tipo: " + tipo);
-                        System.out.println("añoPublicacionStr: " + añoPublicacionStr);
-                        System.out.println("añoPublicacionStr length: " + (añoPublicacionStr != null ? añoPublicacionStr.length() : "null"));
-                        System.out.println("Parámetros recibidos:");
-                        java.util.Enumeration<String> paramNames = request.getParameterNames();
+                        // Depuración usando application.log()
+                        application.log("=== DEBUG INFORMACIÓN DE FORMULARIO ===");
+                        application.log("isbn: " + isbn);
+                        application.log("titulo: " + titulo);
+                        application.log("autor: " + autor);
+                        application.log("tipo: " + tipo);
+                        application.log("añoPublicacionStr: " + añoPublicacionStr);
+                        application.log("añoPublicacionStr length: " + (añoPublicacionStr != null ? añoPublicacionStr.length() : "null"));
+                        application.log("Parámetros recibidos:");
+                        
+                        Enumeration<String> paramNames = request.getParameterNames();
                         while(paramNames.hasMoreElements()) {
                             String paramName = paramNames.nextElement();
-                            System.out.println(paramName + ": " + request.getParameter(paramName));
+                            application.log(paramName + ": " + request.getParameter(paramName));
                         }
                         
                         // Validar datos básicos
@@ -143,20 +141,19 @@
                             throw new Exception(errorMsg);
                         }
                         
-                        // Usar un valor predeterminado si no se recibe año
                         int añoPublicacion = 2014; // Valor predeterminado
                         
                         if (añoPublicacionStr != null && !añoPublicacionStr.trim().isEmpty()) {
                             try {
                                 añoPublicacion = Integer.parseInt(añoPublicacionStr.trim());
-                                System.out.println("Año parseado correctamente: " + añoPublicacion);
+                                application.log("Año parseado correctamente: " + añoPublicacion);
                             } catch (NumberFormatException e) {
-                                System.out.println("ERROR al parsear año: " + e.getMessage());
+                                application.log("ERROR al parsear año: " + e.getMessage());
                                 errorMsg = "El año de publicación debe ser un número válido.";
                                 throw new Exception(errorMsg);
                             }
                         } else {
-                            System.out.println("ADVERTENCIA: Usando año predeterminado porque el valor recibido está vacío");
+                            application.log("ADVERTENCIA: Usando año predeterminado porque el valor recibido está vacío");
                         }
 
                         // Verificar rango del año
@@ -166,16 +163,13 @@
                             throw new Exception(errorMsg);
                         }
 
-                        // Obtener el gestor de libros
                         LibroManager manager = LibroManager.getInstance();
-
-                        // Crear el libro según el tipo
                         Libro nuevoLibro = null;
 
                         if ("Ficcion".equals(tipo)) {
                             String genero = request.getParameter("genero");
                             if (genero == null || genero.trim().isEmpty()) {
-                                genero = "Fantasía"; // Valor predeterminado
+                                genero = "Fantasía";
                             }
                             boolean esSerie = "true".equals(request.getParameter("esSerie"));
 
@@ -183,17 +177,17 @@
                         } else if ("NoFiccion".equals(tipo)) {
                             String tema = request.getParameter("tema");
                             if (tema == null || tema.trim().isEmpty()) {
-                                tema = "Ciencia"; // Valor predeterminado
+                                tema = "Ciencia";
                             }
                             String nivelAcademico = request.getParameter("nivelAcademico");
                             if (nivelAcademico == null || nivelAcademico.trim().isEmpty()) {
-                                nivelAcademico = "Básico"; // Valor predeterminado
+                                nivelAcademico = "Básico";
                             }
                             nuevoLibro = new LibroNoFiccion(isbn, titulo, autor, añoPublicacion, tema, nivelAcademico);
                         } else if ("Referencia".equals(tipo)) {
                             String tipoReferencia = request.getParameter("tipoReferencia");
                             if (tipoReferencia == null || tipoReferencia.trim().isEmpty()) {
-                                tipoReferencia = "Enciclopedia"; // Valor predeterminado
+                                tipoReferencia = "Enciclopedia";
                             }
                             String actualizaciones = request.getParameter("actualizaciones");
                             if (actualizaciones == null) {
@@ -205,7 +199,6 @@
                             errorMsg = "No se pudo crear el libro. Tipo no reconocido: " + tipo;
                         }
 
-                        // Agregar el libro si se creó correctamente
                         if (nuevoLibro != null) {
                             manager.agregarLibro(nuevoLibro);
                             response.sendRedirect("list.jsp?action=add");

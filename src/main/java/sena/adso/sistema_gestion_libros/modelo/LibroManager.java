@@ -1,4 +1,4 @@
-package sena.adso.sistema_gestion_libros.model;
+package sena.adso.sistema_gestion_libros.modelo;
 
 import java.util.ArrayList;
 import java.util.Date;

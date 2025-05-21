@@ -1,4 +1,4 @@
-package sena.adso.sistema_gestion_libros.model;
+package sena.adso.sistema_gestion_libros.modelo;
 
 public class LibroFiccion extends Libro {
     private String genero; // fantasía, ciencia ficción, misterio, etc.
