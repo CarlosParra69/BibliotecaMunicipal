@@ -1,10 +1,10 @@
+<%@page import="sena.adso.sistema_gestion_libros.modelo.Loan"%>
+<%@page import="sena.adso.sistema_gestion_libros.modelo.Libro"%>
+<%@page import="sena.adso.sistema_gestion_libros.modelo.LibroManager"%>
 <%@page import="java.util.Calendar"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="java.util.Date"%>
 <%@page import="java.util.ArrayList"%>
-<%@page import="sena.adso.sistema_gestion_libros.model.Libro"%>
-<%@page import="sena.adso.sistema_gestion_libros.model.Loan"%>
-<%@page import="sena.adso.sistema_gestion_libros.model.LibroManager"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>

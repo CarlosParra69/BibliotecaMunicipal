@@ -1,4 +1,4 @@
-<%@page import="sena.adso.sistema_gestion_libros.model.*"%>
+<%@page import="sena.adso.sistema_gestion_libros.modelo.*"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="java.util.Date"%>

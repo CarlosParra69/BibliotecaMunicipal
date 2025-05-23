@@ -1,6 +1,6 @@
 <%@page import="java.text.SimpleDateFormat"%>
-<%@page import="sena.adso.sistema_gestion_libros.model.LibroManager"%>
-<%@page import="sena.adso.sistema_gestion_libros.model.Loan"%>
+<%@page import="sena.adso.sistema_gestion_libros.modelo.LibroManager"%>
+<%@page import="sena.adso.sistema_gestion_libros.modelo.Loan"%>
 <%@page import="java.util.Date"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>

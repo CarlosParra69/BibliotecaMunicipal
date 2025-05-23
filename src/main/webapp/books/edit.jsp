@@ -1,4 +1,4 @@
-<%@page import="sena.adso.sistema_gestion_libros.model.*"%>
+<%@page import="sena.adso.sistema_gestion_libros.modelo.*"%>
 <%@page import="java.io.*"%>
 <%@page import="java.lang.*"%>
 <%@page import="java.util.*"%>
