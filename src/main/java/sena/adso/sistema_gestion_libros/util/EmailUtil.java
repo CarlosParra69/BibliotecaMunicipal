@@ -1,7 +1,6 @@
 package sena.adso.sistema_gestion_libros.util;
 
 import java.io.PrintStream;
-import java.util.Date;
 import java.util.Properties;
 import javax.mail.Authenticator;
 import javax.mail.Message;
@@ -13,21 +12,68 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 /**
- * Clase utilitaria para el envío de correos electrónicos en el sistema de gestión de libros
+ * Clase utilitaria para el envío de correos electrónicos
  */
 public class EmailUtil {
-    // Configuración del servidor de correo (Gmail)
+    // Configuración del servidor SMTP (ejemplo para Gmail)
     private static final String HOST = "smtp.gmail.com";
     private static final String PORT = "587";
-    private static final String USERNAME = "carlosfernadosolergarzon.com"; // Cambiar por un correo real
-    private static final String PASSWORD = "xvlparojusfxlzdn"; // Usar contraseña de aplicación
+    private static final String USERNAME = "tu_correo@gmail.com"; // Cambiar por un correo real
+    private static final String PASSWORD = "tu_contraseña"; // Usar contraseña de aplicación
     private static final boolean DEBUG = true;
 
     /**
-     * Envía un correo electrónico para recuperación de contraseña
-     * @param destinatario Dirección de correo del destinatario
-     * @param nuevaPassword Nueva contraseña generada
-     * @return true si el envío fue exitoso, false en caso contrario
+     * Envía un correo con las credenciales de registro
+     * @param destinatario Correo del destinatario
+     * @param username Nombre de usuario
+     * @param password Contraseña temporal
+     * @param rol Rol del usuario (Bibliotecario/Lector)
+     * @return true si el envío fue exitoso
+     */
+    public static boolean enviarCredencialesRegistro(String destinatario, String username, 
+                                                   String password, String rol) {
+        Properties props = configurarPropiedades();
+        
+        try {
+            Session session = crearSesion(props);
+            
+            if (DEBUG) {
+                activarDebug(session, destinatario);
+            }
+            
+            Message mensaje = new MimeMessage(session);
+            mensaje.setFrom(new InternetAddress(USERNAME));
+            mensaje.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinatario));
+            mensaje.setSubject("Bienvenido al Sistema de Gestión de Libros");
+            
+            String contenido = "<html><body>"
+                    + "<h2>Credenciales de acceso</h2>"
+                    + "<p>Su registro en el Sistema de Gestión de Libros ha sido exitoso.</p>"
+                    + "<p><strong>Usuario:</strong> " + username + "</p>"
+                    + "<p><strong>Contraseña temporal:</strong> " + password + "</p>"
+                    + "<p><strong>Rol:</strong> " + rol + "</p>"
+                    + "<p>Por motivos de seguridad, deberá cambiar esta contraseña al iniciar sesión por primera vez.</p>"
+                    + "<p>Saludos,<br>Equipo de Biblioteca</p>"
+                    + "</body></html>";
+            
+            mensaje.setContent(contenido, "text/html; charset=utf-8");
+            Transport.send(mensaje);
+            
+            if (DEBUG) {
+                System.out.println("Credenciales enviadas a: " + destinatario);
+            }
+            return true;
+        } catch (MessagingException e) {
+            System.err.println("Error al enviar credenciales: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Envía correo de recuperación de contraseña
+     * @param destinatario Correo del destinatario
+     * @param nuevaPassword Nueva contraseña temporal
+     * @return true si el envío fue exitoso
      */
     public static boolean enviarCorreoRecuperacion(String destinatario, String nuevaPassword) {
         Properties props = configurarPropiedades();
@@ -46,10 +92,9 @@ public class EmailUtil {
 
             String contenido = "<html><body>"
                     + "<h2>Recuperación de Contraseña</h2>"
-                    + "<p>Estimado usuario,</p>"
-                    + "<p>Hemos recibido una solicitud para recuperar su contraseña. "
-                    + "Su nueva contraseña temporal es: <strong>" + nuevaPassword + "</strong></p>"
-                    + "<p>Por favor, cambie esta contraseña después de iniciar sesión.</p>"
+                    + "<p>Hemos recibido una solicitud para recuperar su contraseña.</p>"
+                    + "<p>Su nueva contraseña temporal es: <strong>" + nuevaPassword + "</strong></p>"
+                    + "<p>Por favor, cámbiela después de iniciar sesión por motivos de seguridad.</p>"
                     + "<p>Saludos,<br>Equipo de Biblioteca</p>"
                     + "</body></html>";
 
@@ -61,97 +106,23 @@ public class EmailUtil {
             }
             return true;
         } catch (MessagingException e) {
-            manejarError("recuperación", destinatario, e);
+            System.err.println("Error al enviar correo de recuperación: " + e.getMessage());
             return false;
         }
     }
 
     /**
-     * Envía credenciales de acceso al sistema
-     * @param destinatario Correo del destinatario
-     * @param username Nombre de usuario
-     * @param password Contraseña temporal
-     * @param rol Rol del usuario (Bibliotecario/Lector)
-     * @return true si el envío fue exitoso
+     * Genera una contraseña temporal segura
+     * @return Contraseña generada
      */
-    public static boolean enviarCredenciales(String destinatario, String username, String password, String rol) {
-        Properties props = configurarPropiedades();
-
-        try {
-            Session session = crearSesion(props);
-            
-            if (DEBUG) {
-                activarDebug(session, destinatario);
-            }
-            
-            Message mensaje = new MimeMessage(session);
-            mensaje.setFrom(new InternetAddress(USERNAME));
-            mensaje.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinatario));
-            mensaje.setSubject("Credenciales de Acceso - Sistema de Gestión de Libros");
-            
-            String contenido = "<html><body>"
-                    + "<h2>Bienvenido al Sistema de Gestión de Libros</h2>"
-                    + "<p>Sus credenciales de acceso son:</p>"
-                    + "<p><strong>Usuario:</strong> " + username + "</p>"
-                    + "<p><strong>Contraseña temporal:</strong> " + password + "</p>"
-                    + "<p><strong>Rol:</strong> " + rol + "</p>"
-                    + "<p>Saludos,<br>Equipo de Biblioteca</p>"
-                    + "</body></html>";
-            
-            mensaje.setContent(contenido, "text/html; charset=utf-8");
-            Transport.send(mensaje);
-            
-            if (DEBUG) {
-                System.out.println("Credenciales enviadas a: " + destinatario);
-            }
-            return true;
-        } catch (MessagingException e) {
-            manejarError("credenciales", destinatario, e);
-            return false;
+    public static String generarPasswordTemporal() {
+        String caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%";
+        StringBuilder sb = new StringBuilder(10);
+        for (int i = 0; i < 10; i++) {
+            int index = (int) (Math.random() * caracteres.length());
+            sb.append(caracteres.charAt(index));
         }
-    }
-
-    /**
-     * Envía notificación de préstamo de libro
-     * @param destinatario Correo del lector
-     * @param tituloLibro Título del libro prestado
-     * @param fechaDevolucion Fecha límite de devolución
-     * @return true si el envío fue exitoso
-     */
-    public static boolean notificarPrestamo(String destinatario, String tituloLibro, Date fechaDevolucion) {
-        Properties props = configurarPropiedades();
-
-        try {
-            Session session = crearSesion(props);
-            
-            if (DEBUG) {
-                activarDebug(session, destinatario);
-            }
-            
-            Message mensaje = new MimeMessage(session);
-            mensaje.setFrom(new InternetAddress(USERNAME));
-            mensaje.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinatario));
-            mensaje.setSubject("Préstamo de Libro - Sistema de Gestión de Libros");
-            
-            String contenido = "<html><body>"
-                    + "<h2>Confirmación de Préstamo</h2>"
-                    + "<p>Ha solicitado el siguiente libro:</p>"
-                    + "<p><strong>Título:</strong> " + tituloLibro + "</p>"
-                    + "<p><strong>Fecha límite de devolución:</strong> " + fechaDevolucion + "</p>"
-                    + "<p>Saludos,<br>Equipo de Biblioteca</p>"
-                    + "</body></html>";
-            
-            mensaje.setContent(contenido, "text/html; charset=utf-8");
-            Transport.send(mensaje);
-            
-            if (DEBUG) {
-                System.out.println("Notificación de préstamo enviada a: " + destinatario);
-            }
-            return true;
-        } catch (MessagingException e) {
-            manejarError("notificación de préstamo", destinatario, e);
-            return false;
-        }
+        return sb.toString();
     }
 
     // Métodos auxiliares privados
@@ -178,26 +149,5 @@ public class EmailUtil {
     private static void activarDebug(Session session, String destinatario) {
         session.setDebug(true);
         System.out.println("Preparando envío a: " + destinatario);
-    }
-    
-    private static void manejarError(String tipo, String destinatario, MessagingException e) {
-        System.err.println("Error al enviar correo de " + tipo + " a " + destinatario);
-        if (DEBUG) {
-            e.printStackTrace();
-        }
-    }
-    
-    /**
-     * Genera una contraseña temporal aleatoria
-     * @return Contraseña generada
-     */
-    public static String generarPasswordTemporal() {
-        String caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        StringBuilder sb = new StringBuilder(8);
-        for (int i = 0; i < 8; i++) {
-            int index = (int)(Math.random() * caracteres.length());
-            sb.append(caracteres.charAt(index));
-        }
-        return sb.toString();
     }
 }
